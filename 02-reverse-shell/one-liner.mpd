@@ -1,0 +1,14 @@
+Menggunakan echo (Paling Umum):
+
+Bash
+echo '<?php echo "halo aku disini"; ?>' > halo.php
+Menggunakan cat (HereDoc):
+
+Bash
+cat << 'EOF' > halo.php
+<?php echo "halo aku disini"; ?>
+EOF
+Menggunakan printf:
+
+Bash
+printf '<?php echo "halo aku disini"; ?>\n' > halo.php
