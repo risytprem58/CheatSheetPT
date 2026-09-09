@@ -43,7 +43,9 @@
     ├── 📝 01-Executive Summary.md # Ringkasan eksekutif laporan pentest
     ├── 🗃️ 02-SQL Injection.md    # Detail temuan SQL Injection
     ├── 🔓 03-IDOR.md             # Detail temuan IDOR
-    └── 📤 04-Unrestricted File Upload.md # Detail temuan File Upload RCE
+    ├── 📤 04-Unrestricted File Upload.md # Detail temuan File Upload RCE
+    ├── 📜 05-Stored XSS.md       # Detail temuan Stored XSS
+    └── 📂 06-Local File Inclusion.md # Detail temuan Local File Inclusion (LFI)
 ```
 
 ---
