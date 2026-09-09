@@ -17,7 +17,7 @@ Kerentanan ini terjadi karena aplikasi menerima jalur file (*file path*) dari in
 
 ## 💥 Dampak
 
-- **Pencurian Data dan File Sensitif (Sensitive Data Exposure):** Penyerang dapat membaca file konfigurasi sistem, file sumber kode aplikasi, kredensial database, hingga file sensitif server (seperti `/etc/passwd` di Linux atau `c:\windows\win.ini` di Windows). laravel (config/ app.php auth.php broadcasting.php cache.php cors.php database.php filesystems.php hashing.php logging.php mail.php queue.php services.php session.php view.php )
+- **Pencurian Data dan File Sensitif (Sensitive Data Exposure):** Penyerang dapat membaca file konfigurasi sistem, file sumber kode aplikasi, kredensial database, hingga file sensitif server (seperti `/etc/passwd` di Linux atau `c:\windows\win.ini` di Windows). laravel `(config/ app.php auth.php broadcasting.php cache.php cors.php database.php filesystems.php hashing.php logging.php mail.php queue.php services.php session.php view.php )`
 - **Eskalasi Celah ke Remote Code Execution (RCE):** Jika penyerang berhasil mengakses file log server, file session, atau file unggahan lalu menyuntikkan kode berbahaya ke dalamnya (*log poisoning*), celah ini dapat berkembang menjadi eksekusi perintah sistem penuh.
 - **Pengambilalihan Server (Full System Compromise):** Penyerang berpotensi mendapatkan akses kontrol penuh atas server aplikasi setelah berhasil menemukan informasi rahasia atau mengeksekusi kode di server.
 
