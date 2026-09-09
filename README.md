@@ -19,7 +19,8 @@
 │   ├── 📤 File_Upload.md           # Unggah webshell
 │   ├── 📂 LFI.md                   # Include file lokal
 │   ├── 🗃️ SQL_Injection.md         # Eksploitasi kerentanan SQL
-│   └── 🎨 SSTI.md                  # Injeksi template sisi server
+│   ├── 🎨 SSTI.md                  # Injeksi template sisi server
+│   └── 📜 XSS.md                   # Koleksi payload Cross-Site Scripting (XSS)
 ├── 📂 02-reverse-shell/          # Membangun koneksi balik ke attacker
 │   ├── 💉 Command_Injection.md     # Reverse shell via command injection
 │   ├── 👂 Listener.md              # Siapkan penerima di attacker
@@ -45,7 +46,8 @@
     ├── 🔓 03-IDOR.md             # Detail temuan IDOR
     ├── 📤 04-Unrestricted File Upload.md # Detail temuan File Upload RCE
     ├── 📜 05-Stored XSS.md       # Detail temuan Stored XSS
-    └── 📂 06-Local File Inclusion.md # Detail temuan Local File Inclusion (LFI)
+    ├── 📂 06-Local File Inclusion.md # Detail temuan Local File Inclusion (LFI)
+    └── ⚡ 07-Command Injection.md # Detail temuan Command Injection
 ```
 
 ---
@@ -55,7 +57,7 @@
 | No | Folder | Topik | Deskripsi Singkat |
 |----|--------|-------|-------------------|
 | 1 | `00-recon/` | **Pengawalan** | Network discovery, port scanning, web directory bruteforce, Wapiti |
-| 2 | `01-initial-foothold/` | **Mendapatkan Akses Awal** | SQL injection, file upload, SSTI, LFI, command injection |
+| 2 | `01-initial-foothold/` | **Mendapatkan Akses Awal** | SQL injection, file upload, SSTI, LFI, command injection, XSS |
 | 3 | `02-reverse-shell/` | **Reverse Shell** | Listener, payload generation, stabilization, command injection |
 | 4 | `03-enumeration/` | **Enumerasi Sistem** | LinPEAS, manual enumeration, GTFOBins |
 | 5 | `04-privilege-escalation/` | **Privilege Escalation** | Kernel exploits (DirtyFrag, CopyFail), SUID, sudo, weak permissions, cron |
@@ -118,6 +120,12 @@ flowchart LR
 4. **Privilege escalation**: Gunakan **LES (Linux Exploit Suggester)** untuk mencocokkan kernel dengan CVE yang tepat (DirtyFrag, CopyFail, DirtyPipe, dll).
 5. **Bukti (proof)**: Selalu dokumentasikan `id` → `uid=0(root)` dan `hostname` sebagai bukti.
 6. **Catatan penting**: Teknik ini hanya untuk digunakan pada sistem yang Anda miliki atau dengan izin eksplisit.
+
+---
+
+## 📚 Referensi & Sumber
+
+- [w4h4z / Pentest-Cheat-Sheet](https://github.com/w4h4z/Pentest-Cheat-Sheet/tree/main/)
 
 ---
 
