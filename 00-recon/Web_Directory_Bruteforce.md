@@ -49,7 +49,7 @@ http://10.0.2.10:80/config.php  [CODE:200|SIZE:2048]
 feroxbuster -u http://<TARGET>:PORT/ -s 200-399
 ```
 ```bash
-feroxbuster -u http://<TARGET>:PORT/ -w /usr/share/wordlists/dirb/common.txt -s 200-399
+feroxbuster -u http://target-website.com/ -w wordlist.txt -s 200,201,202,204,301,302,307,308
 ```
 
 **Contoh output:**
