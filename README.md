@@ -38,7 +38,11 @@
 │   ├── 🔓 Weak_Permission.md       # File dengan permission longgar
 │   └── ⏰ Writable_Cron.md         # Cron job yang dapat dimodifikasi
 └── 📂 05-proof/                  # Bukti bahwa akses root sudah diperoleh
-    └── ✅ Submission.md           # Tampilkan id dan hostname
+│   └── ✅ Submission.md           # Tampilkan id dan hostname
+└── 📂 06-report/                 # Laporan pentest & detail temuan
+    ├── 📝 01-Executive Summary.md # Ringkasan eksekutif laporan pentest
+    ├── 🗃️ 02-SQL Injection.md    # Detail temuan SQL Injection
+    └── 🔓 03-IDOR.md             # Detail temuan IDOR
 ```
 
 ---
@@ -53,6 +57,7 @@
 | 4 | `03-enumeration/` | **Enumerasi Sistem** | LinPEAS, manual enumeration, GTFOBins |
 | 5 | `04-privilege-escalation/` | **Privilege Escalation** | Kernel exploits (DirtyFrag, CopyFail), SUID, sudo, weak permissions, cron |
 | 6 | `05-proof/` | **Bukti Akses** | Verifikasi `uid=0` dan hostname |
+| 7 | `06-report/` | **Laporan Pentest** | Executive summary & detail temuan (SQL Injection, dll) |
 
 ---
 
