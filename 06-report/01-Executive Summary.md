@@ -6,7 +6,7 @@
 
 ## 1. Ringkasan Pengujian
 
-Pengujian keamanan (penetration testing) ini dilakukan terhadap aplikasi web/API **Job Portal** (`https://jobportal.vulnapp.id`) dengan tujuan untuk mengidentifikasi celah keamanan yang dapat dimanfaatkan oleh pihak tidak berwenang. Pengujian dilaksanakan berdasarkan ruang lingkup dan metodologi yang telah disepakati pada Rules of Engagement (RoE), mencakup pendekatan **black-box testing**. Fokus utama pengujian meliputi evaluasi kontrol akses, verifikasi otorisasi di sisi server, serta ketahanan aplikasi terhadap manipulasi input pada berbagai endpoint kritis. Selama periode pengujian (**1 Sep 2026** s/d **7 Sep 2026**), berhasil diidentifikasi sebanyak **4 temuan** kerentanan dengan rincian tingkat keparahan (severity) sebagai berikut:
+Pengujian keamanan (penetration testing) ini dilakukan terhadap aplikasi web/API **Job Portal** (`https://jobportal.vulnapp.id`) dengan tujuan untuk mengidentifikasi celah keamanan yang dapat dimanfaatkan oleh pihak tidak berwenang. Pengujian dilaksanakan berdasarkan ruang lingkup dan metodologi yang telah disepakati pada Rules of Engagement (RoE), mencakup pendekatan **black-box testing**. Fokus utama pengujian meliputi evaluasi kontrol akses, verifikasi otorisasi di sisi server, serta ketahanan aplikasi terhadap manipulasi input pada berbagai endpoint kritis. Selama periode pengujian (**1 Sep 2026** s/d **7 Sep 2026**), berhasil diidentifikasi sebanyak **5 temuan** kerentanan dengan rincian tingkat keparahan (severity) sebagai berikut:
 
 ---
 
@@ -15,9 +15,9 @@ Pengujian keamanan (penetration testing) ini dilakukan terhadap aplikasi web/API
 | Severity | Jumlah |
 |----------|--------|
 | 🔴 Critical | 2 |
-| 🟠 High | 1 |
+| 🟠 High | 2 |
 | 🟡 Medium | 1 |
-| **Total** | **4** |
+| **Total** | **5** |
 
 ---
 
@@ -28,7 +28,8 @@ Pengujian keamanan (penetration testing) ini dilakukan terhadap aplikasi web/API
 | 1 | SQL Injection — Input tidak disanitasi, penyerang dapat dump seluruh database | 🔴 Critical | `/api/auth/login`, `/api/jobs/search?keyword=` | 9.3 |
 | 2 | Unrestricted File Upload — Upload webshell `.php` berhasil dieksekusi sebagai script di server (RCE) | 🔴 Critical | `/api/resume/upload` → `/uploads/resume/shell.php?cmd=id` | 9.8 |
 | 3 | IDOR (Insecure Direct Object Reference) — Akses & modifikasi data user lain via manipulasi ID | 🟠 High | `/api/users/{id}/profile` | 8.6 |
-| 4 | Stored XSS (Cross-Site Scripting) — Payload JavaScript tersimpan dan tereksekusi di browser korban | 🟡 Medium | `/api/profile/update` (field profil) | 5.1 |
+| 4 | Local File Inclusion (LFI) — Membaca file sistem (`/etc/passwd`) & source code sensitif via path traversal | 🟠 High | `/api/download?file=` | 7.5 |
+| 5 | Stored XSS (Cross-Site Scripting) — Payload JavaScript tersimpan dan tereksekusi di browser korban | 🟡 Medium | `/api/profile/update` (field profil) | 5.1 |
 
 ---
 
