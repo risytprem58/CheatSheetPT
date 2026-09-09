@@ -22,7 +22,7 @@
 
 ```bash
 # Scan dengan wordlist default
-dirsearch -u http://<TARGET>:PORT/
+dirsearch -u http://<TARGET>:PORT/ -i 200-399
 
 # Scan dengan custom wordlist
 dirsearch -u http://<TARGET>:PORT/ -w /usr/share/wordlists/dirb/common.txt
@@ -46,7 +46,10 @@ http://10.0.2.10:80/config.php  [CODE:200|SIZE:2048]
 ### Langkah 2: Feroxbuster (Recursive Scan)
 
 ```bash
-feroxbuster -u http://<TARGET>:PORT/ -w /usr/share/wordlists/dirb/common.txt
+feroxbuster -u http://<TARGET>:PORT/ -s 200-399
+```
+```bash
+feroxbuster -u http://<TARGET>:PORT/ -w /usr/share/wordlists/dirb/common.txt -s 200-399
 ```
 
 **Contoh output:**
