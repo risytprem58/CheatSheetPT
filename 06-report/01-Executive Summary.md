@@ -25,9 +25,9 @@ Pengujian keamanan (penetration testing) ini dilakukan terhadap aplikasi web/API
 
 | No | Kerentanan | Severity | Endpoint / Lokasi | CVSS |
 |----|------------|----------|--------------------|------|
-| 1 | SQL Injection — Input tidak disanitasi, penyerang dapat dump seluruh database | 🔴 Critical | `/api/search?q=` | 9.8 |
+| 1 | SQL Injection — Input tidak disanitasi, penyerang dapat dump seluruh database | 🔴 Critical | `/api/auth/login`, `/api/jobs/search?keyword=` | 9.3 |
 | 2 | Unrestricted File Upload — Upload webshell `.php` berhasil dieksekusi sebagai script di server (RCE) | 🔴 Critical | `/api/resume/upload` → `/uploads/resume/shell.php?cmd=id` | 9.8 |
-| 3 | IDOR (Insecure Direct Object Reference) — Akses data user lain dengan mengganti parameter ID | 🟠 High | `/api/users/{id}/profile` | 7.5 |
+| 3 | IDOR (Insecure Direct Object Reference) — Akses & modifikasi data user lain via manipulasi ID | 🟠 High | `/api/users/{id}/profile` | 8.6 |
 | 4 | Stored XSS — Payload JavaScript tersimpan dan tereksekusi di browser korban | 🟡 Medium | `/jobs/post` (field deskripsi) | 6.1 |
 
 ---
