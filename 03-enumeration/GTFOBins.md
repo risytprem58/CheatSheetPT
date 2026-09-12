@@ -1,18 +1,18 @@
-# 🐍 GTFOBins / LOLBAS — Menggunakan Binary Sistem untuk Privilege Escalation
+﻿# GTFOBins / LOLBAS — Menggunakan Binary Sistem untuk Privilege Escalation
 
 > **Tujuan:** Mencari teknik abuse abuse‑dari binary Unix/Linux (GTFS bin) atau Windows (LOLBAS) yang memiliki SUID, setuid‑setgid, atau dapat dijalankan lewat sudo.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 GTFOBins (Linux) dan LOLBAS (Windows) adalah **daftar online** yang mengumpulkan contoh abuse binary yang sudah ter‑install di sistem, menyediakan teknik eksekusi kode atau privilege escalation tanpa menambah binary eksternal.
 
 ---
 
-## 🔎 Cara Menggunakan GTFOBins (Linux)
+## Cara Menggunakan GTFOBins (Linux)
 
-### 1️⃣ Temukan Binary SUID / Sudo‑able
+### 1 Temukan Binary SUID / Sudo‑able
 
 ```bash
 # Cari semua binary dengan SUID bit
@@ -22,11 +22,11 @@ find / -perm -4000 -type f 2>/dev/null
 sudo -l
 ```
 
-### 2️⃣ Cari Di GTFOBins
+### 2 Cari Di GTFOBins
 
 Buka <https://gtfobins.github.io> dan masukkan nama binary (mis. `vim`, `awk`, `python`).
 
-### 3️⃣ Contoh Abuse
+### 3 Contoh Abuse
 
 | Binary | Teknik Abuse |
 |--------|----------------|
@@ -37,7 +37,7 @@ Buka <https://gtfobins.github.io> dan masukkan nama binary (mis. `vim`, `awk`, `
 
 ---
 
-## 🔎 Cara Menggunakan LOLBAS (Windows)
+## Cara Menggunakan LOLBAS (Windows)
 
 1. Buka <https://lolbas-project.github.io>.
 2. Pilih binary (mis. `regsvr32.exe`, `rundll32.exe`).
@@ -45,7 +45,7 @@ Buka <https://gtfobins.github.io> dan masukkan nama binary (mis. `vim`, `awk`, `
 
 ---
 
-## 📋 Checklist GTFOBins / LOLBAS
+## Checklist GTFOBins / LOLBAS
 
 - [ ] Enumerasi binary SUID (`find / -perm -4000 -type f`).
 - [ ] Enumerasi sudo‑allowed commands (`sudo -l`).
@@ -56,7 +56,7 @@ Buka <https://gtfobins.github.io> dan masukkan nama binary (mis. `vim`, `awk`, `
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [GTFOBins – Linux Binary Exploitation](https://gtfobins.github.io)
 - [LOLBAS – Windows Binary Abuse](https://lolbas-project.github.io)
