@@ -1,16 +1,16 @@
-# 🔓 Weak File Permission (File Permission Misconfiguration)
+﻿# Weak File Permission (File Permission Misconfiguration)
 
 > **Tujuan:** Memanfaatkan file sistem penting yang **readable / writable** oleh user tidak berhak untuk melakukan **privilege escalation** atau **credential disclosure**.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 Weak File Permission terjadi ketika file penting memiliki permission terlalu longgar (readable/writable oleh user biasa). Dampaknya antara lain: **credential disclosure**, **account takeover**, atau **modifikasi konfigurasi privilege** seperti `sudoers`.
 
 ---
 
-## 🛡️ Inspeksi File Penting
+## Inspeksi File Penting
 
 ```bash
 ls -la /etc/passwd /etc/shadow /etc/sudoers /etc/sudoers.d/
@@ -26,7 +26,7 @@ ls -la /etc/passwd /etc/shadow /etc/sudoers /etc/sudoers.d/
 
 ---
 
-## 1️⃣ `/etc/passwd` Writable
+## 1 `/etc/passwd` Writable
 
 Jika user biasa dapat menulis `/etc/passwd`, attacker dapat menambahkan akun root baru.
 
@@ -50,7 +50,7 @@ su hacker   # password: pass123
 
 ---
 
-## 2️⃣ `/etc/shadow` Readable
+## 2 `/etc/shadow` Readable
 
 Jika `/etc/shadow` readable, attacker dapat mencuri hash password lalu di-crack dengan **John the Ripper** atau **Hashcat**.
 
@@ -64,7 +64,7 @@ hashcat -m 1800 hash.txt rockyou.txt
 
 ---
 
-## 3️⃣ `/etc/shadow` Writable
+## 3 `/etc/shadow` Writable
 
 ```bash
 # Generate hash baru
@@ -82,11 +82,11 @@ sed -i 's|^root:[^:]*:|root:$1$xyz$hash_disini:|' /etc/shadow
 su root   # password: pass123
 ```
 
-> ⚠️ Format hash harus sesuai dengan konfigurasi hashing sistem. Selalu **backup** sebelum modifikasi.
+>  Format hash harus sesuai dengan konfigurasi hashing sistem. Selalu **backup** sebelum modifikasi.
 
 ---
 
-## 4️⃣ `/etc/sudoers.d/` Writable
+## 4 `/etc/sudoers.d/` Writable
 
 Jika user biasa dapat menambahkan file di `/etc/sudoers.d/`, attacker dapat membuat file sudoers baru yang memberikan **hak root tanpa password**.
 
@@ -104,7 +104,7 @@ sudo su
 
 ---
 
-## 5️⃣ SSH Private Key Readable
+## 5 SSH Private Key Readable
 
 ```bash
 cat /home/<user>/.ssh/id_rsa
@@ -116,7 +116,7 @@ ssh -i id_rsa <user>@<TARGET>
 
 ---
 
-## 🪜 Alur Pemeriksaan
+## Alur Pemeriksaan
 
 ```text
 Cari File Penting
@@ -134,7 +134,7 @@ Validasi Privilege Escalation
 
 ---
 
-## 📋 Checklist Weak File Permission
+## Checklist Weak File Permission
 
 - [ ] Inspect `/etc/passwd`, `/etc/shadow`, `/etc/sudoers`, `/etc/sudoers.d/`.
 - [ ] Cek `~/.ssh/id_rsa` pada home user.
@@ -148,7 +148,7 @@ Validasi Privilege Escalation
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [OWASP – Privilege Escalation Cheat Sheet](https://owasp.org/www-project-privilege-escalation-cheat-sheet)
 - [John the Ripper – Password Cracker](https://www.openwall.com/john/)
