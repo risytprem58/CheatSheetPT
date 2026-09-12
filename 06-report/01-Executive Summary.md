@@ -10,10 +10,10 @@ Pengujian keamanan (penetration testing) ini dilakukan terhadap aplikasi web Tek
 
 | Tingkat Keparahan | Jumlah Temuan |
 |-------------------|---------------|
-| Critical | 0 |
-| High | 0 |
-| Medium | 0 |
-| Low | 0 |
+| Critical | 3 |
+| High | 3 |
+| Medium | 2 |
+| Low | 1 |
 | Informational | 0 |
 
 ---
