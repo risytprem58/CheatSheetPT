@@ -45,6 +45,17 @@ http://10.0.2.10:80/config.php  [CODE:200|SIZE:2048]
 
 ### Langkah 2: Feroxbuster (Recursive Scan)
 
+sejauh ini paling ampuh pakai wordlist dirb
+```bash
+feroxbuster -u http://<TARGET>:PORT/ -w /usr/share/dirb/wordlists/common.txt
+```
+
+pakai wordlist ferox sendiri yang ada di  /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt
+
+```bash
+feroxbuster -u http://<TARGET>:PORT/
+```
+
 ```bash
 feroxbuster -u http://<TARGET>:PORT/ -s 200-399
 ```
