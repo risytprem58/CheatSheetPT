@@ -1,30 +1,30 @@
-# 📤 Finding 04: Arbitrary File Upload to Remote Code Execution (RCE)
+﻿# Finding 04: Arbitrary File Upload to Remote Code Execution (RCE)
 
 | Item | Detail |
 |------|--------|
 | **Kerentanan** | Arbitrary File Upload to Remote Code Execution (RCE) |
-| **Severity** | 🔴 Critical |
+| **Severity** |  Critical |
 | **Skor CVSS** | 9.8 (`CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N`) |
 | **Endpoint** | `POST /api/resume/upload` → `/uploads/resume/shell.php` |
 
 ---
 
-## 📌 Deskripsi
+## Deskripsi
 
 Terjadi ketika fitur pengunggahan file tidak memvalidasi jenis, ekstensi, atau isi file yang dikirim oleh pengguna secara ketat. Hal ini memungkinkan penyerang mengunggah file skrip eksekutabel (*web shell*) ke direktori web server yang dapat diakses publik.
 
 ---
 
-## 💥 Dampak
+## Dampak
 
 - **Remote Code Execution (RCE):** Penyerang dapat mengeksekusi perintah sistem operasi (*command execution*) secara langsung dari jauh.
 - **Pengambilalihan Server:** Penyerang dapat mengambil kontrol penuh atas server aplikasi, mengakses file internal, atau menggunakannya sebagai pijakan untuk menyerang jaringan lokal (*pivoting*).
 
 ---
 
-## 🧪 Langkah Proof of Concept (PoC)
+## Langkah Proof of Concept (PoC)
 
-### 🔹 Langkah 1 — Melakukan upload file dengan ekstensi `.php`
+### Langkah 1 — Melakukan upload file dengan ekstensi `.php`
 
 Mencoba mengunggah file webshell `shell.php` secara langsung melalui fitur upload.
 
@@ -41,11 +41,11 @@ Content-Type: application/x-php
 ------WebKitFormBoundary--
 ```
 
-> 📸 **[Capture Request Upload shell.php]**
+>  **[Capture Request Upload shell.php]**
 
 ---
 
-### 🔹 Langkah 2 — Bypass filter dengan upload file `.php.jpeg` dan me-rename nama file / request di Burp Suite
+### Langkah 2 — Bypass filter dengan upload file `.php.jpeg` dan me-rename nama file / request di Burp Suite
 
 Jika ekstensi `.php` diblokir oleh validasi nama file di sisi client/server, file dinamai `shell.php.jpeg` agar lolos filter validasi gambar, lalu di-intercept via Burp Suite untuk mengganti ekstensi/header kembali menjadi `.php`.
 
@@ -62,11 +62,11 @@ Content-Type: image/jpeg
 ------WebKitFormBoundary--
 ```
 
-> 📸 **[Capture Intercept Burp Suite / Bypass Ekstensi shell.php.jpeg]**
+>  **[Capture Intercept Burp Suite / Bypass Ekstensi shell.php.jpeg]**
 
 ---
 
-### 🔹 Langkah 3 — Akses `shell.php` untuk verifikasi eksekusi perintah (RCE)
+### Langkah 3 — Akses `shell.php` untuk verifikasi eksekusi perintah (RCE)
 
 Mengakses URL hasil upload file `shell.php` melalui browser/curl dengan menambahkan parameter perintah (`?cmd=id`).
 
@@ -83,11 +83,11 @@ Host: jobportal.vulnapp.id
 uid=33(www-data) gid=33(www-data) groups=33(www-data)
 ```
 
-> 📸 **[Capture Hasil Akses Webshell & Output Command Execution]**
+>  **[Capture Hasil Akses Webshell & Output Command Execution]**
 
 ---
 
-### 🔹 Langkah 4 — Mendapatkan Reverse Shell (Listening & Connection)
+### Langkah 4 — Mendapatkan Reverse Shell (Listening & Connection)
 
 Untuk mendapatkan akses terminal interaktif (RCE penuh):
 
@@ -113,11 +113,11 @@ www-data@target-server:/var/www/html/uploads/resume$ id
 uid=33(www-data) gid=33(www-data) groups=33(www-data)
 ```
 
-> 📸 **[Capture Netcat Listener & Reverse Shell Connected]**
+>  **[Capture Netcat Listener & Reverse Shell Connected]**
 
 ---
 
-## 🛠️ Rekomendasi Perbaikan
+## Rekomendasi Perbaikan
 
 - Validasi file di sisi server (*server-side*) menggunakan **daftar putih (allowlist)** untuk ekstensi file dan MIME-type yang diizinkan.
 - **Simpan file unggahan di luar direktori web root** atau gunakan penyimpanan pihak ketiga (*Cloud Object Storage*).
