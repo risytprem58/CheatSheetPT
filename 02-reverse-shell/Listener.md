@@ -1,18 +1,18 @@
-# 🎧 Listener — Menerima Koneksi Reverse Shell
+﻿# Listener — Menerima Koneksi Reverse Shell
 
 > **Tujuan:** Menyiapkan listener di mesin attacker agar koneksi reverse shell dari target bisa diterima dan di-interact.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 Listener adalah **server kecil** yang dijalankan di Kali untuk menerima koneksi masuk dari target. **Harus dijalankan sebelum payload dieksekusi** di target.
 
 ---
 
-## ⚙️ Cara Menjalankan
+## Cara Menjalankan
 
-### 1️⃣ Netcat Standar
+### 1 Netcat Standar
 
 ```bash
 nc -lvnp 4444
@@ -25,7 +25,7 @@ nc -lvnp 4444
 | `-n` | Tanpa DNS resolution (lebih cepat) |
 | `-p 4444` | Port yang di-listen |
 
-### 2️⃣ Netcat + rlwrap (Recommended)
+### 2 Netcat + rlwrap (Recommended)
 
 ```bash
 rlwrap nc -lvnp 4444
@@ -35,7 +35,7 @@ rlwrap nc -lvnp 4444
 
 ---
 
-## 🔄 Alur Reverse Shell
+## Alur Reverse Shell
 
 ```text
 Target (victim)
@@ -51,7 +51,7 @@ Kali Linux (attacker)
 
 ---
 
-## 💡 Tips Penggunaan
+## Tips Penggunaan
 
 - **Jalankan listener dulu** sebelum trigger payload di target.
 - **Gunakan port yang konsisten** di listener dan payload (mis. 4444).
@@ -60,7 +60,7 @@ Kali Linux (attacker)
 
 ---
 
-## ✅ Checklist Listener
+## Checklist Listener
 
 - [ ] Tentukan **LHOST** (IP Kali).
 - [ ] Tentukan **LPORT** (port listener, mis. 4444).
@@ -70,7 +70,7 @@ Kali Linux (attacker)
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [PentestMonkey Reverse Shell Cheat Sheet](https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet)
 - [revshells.com — Generator Reverse Shell](https://revshells.com)
