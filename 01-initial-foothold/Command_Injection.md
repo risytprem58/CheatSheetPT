@@ -1,16 +1,16 @@
-# 💉 Command Injection — Mengeksekusi Perintah di Server
+﻿# Command Injection — Mengeksekusi Perintah di Server
 
 > **Tujuan:** Mengeksekusi perintah OS di server target melalui input aplikasi web yang rentan.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 Command Injection terjadi ketika aplikasi **memasukkan input user ke shell tanpa sanitasi**, sehingga attacker bisa menjalankan perintah OS apa pun.
 
 ---
 
-## 🔍 Ciri-Ciri Aplikasi Rentan
+## Ciri-Ciri Aplikasi Rentan
 
 - Input user dimasukkan ke command shell.
 - Aplikasi menampilkan output dari perintah shell.
@@ -18,7 +18,7 @@ Command Injection terjadi ketika aplikasi **memasukkan input user ke shell tanpa
 
 ---
 
-## ⚙️ Payload: Separator (dari yang mudah ke sulit)
+## Payload: Separator (dari yang mudah ke sulit)
 
 ### Tipe 1: Eksekusi Berurutan
 
@@ -92,7 +92,7 @@ $(id)
 
 ---
 
-## 🔇 Blind Command Injection (Tanpa Output Langsung)
+## Blind Command Injection (Tanpa Output Langsung)
 
 Jika tidak ada output, gunakan teknik **exfiltration** atau **time-based**.
 
@@ -135,7 +135,7 @@ RESPONSE TIME: 5.2 seconds
 
 ---
 
-## 🛠️ Contoh Exploitasi
+## Contoh Exploitasi
 
 ### Reverse Shell via Command Injection
 
@@ -152,7 +152,7 @@ RESPONSE TIME: 5.2 seconds
 
 ---
 
-## 📋 Tabel Ringkasan Payload
+## Tabel Ringkasan Payload
 
 | Payload | Tujuan |
 |---------|--------|
@@ -169,7 +169,7 @@ RESPONSE TIME: 5.2 seconds
 
 ---
 
-## ⚠️ Catatan Penting
+## Catatan Penting
 
 - **Cek dulu** apakah output muncul langsung (reflected) atau buta (blind).
 - **Untuk blind**, time-based paling mudah; exfiltration butuh listener di Kali.
@@ -178,7 +178,7 @@ RESPONSE TIME: 5.2 seconds
 
 ---
 
-## ✅ Checklist Deteksi Command Injection
+## Checklist Deteksi Command Injection
 
 - [ ] Test dengan `; whoami` (reflected)
 - [ ] Test dengan `| whoami`
@@ -190,7 +190,7 @@ RESPONSE TIME: 5.2 seconds
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [OWASP Command Injection](https://owasp.org/www-community/attacks/Command_Injection)
 - [PayloadsAllTheThings - Command Injection](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Command%20Injection)
