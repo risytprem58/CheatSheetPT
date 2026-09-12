@@ -21,10 +21,10 @@
 ### 1. Nmap Port Scan & NSE Script Scanning
 
 ```bash
-# Scan port 3306 & cek versi service
+# Scan port 3306 (atau port kustom, misal -p 3307) & cek versi service
 nmap -p 3306 -sV <TARGET>
 
-# Jalankan skrip enumerasi MySQL bawaan Nmap
+# Jalankan skrip enumerasi MySQL bawaan Nmap pada port kustom
 nmap -p 3306 --script mysql-enum,mysql-info,mysql-empty-password <TARGET>
 
 # Audit password lemah/kosong dengan Nmap NSE
@@ -36,11 +36,11 @@ nmap -p 3306 --script mysql-brute --script-args userdb=users.txt,passdb=password
 ### 2. Brute Force Credentials dengan Hydra
 
 ```bash
-# Brute force login MySQL menggunakan Hydra
+# Brute force login MySQL port default (3306) menggunakan Hydra
 hydra -l root -P /usr/share/wordlists/metasploit/root_userpass.txt <TARGET> mysql
 
-# Brute force dengan daftar username dan password terpisah
-hydra -L users.txt -P passwords.txt <TARGET> mysql -t 4
+# Brute force dengan port kustom (misal port 3307) dan daftar user/pass
+hydra -L users.txt -P passwords.txt -s 3307 <TARGET> mysql -t 4
 ```
 
 ---
@@ -52,14 +52,15 @@ hydra -L users.txt -P passwords.txt <TARGET> mysql -t 4
 #### A. Perintah Login Standar
 
 ```bash
-# Login tanpa password
+# Login port default (3306) tanpa password
 mysql -h <TARGET> -u root
 
-# Login dengan prompt password
+# Login port default (3306) dengan prompt password
 mysql -h <TARGET> -u root -p
 
-# Login pada port kustom
+# Login pada port kustom (misal port 3307 atau 33060)
 mysql -h <TARGET> -P 3307 -u root -p
+mysql -h <TARGET> -P <PORT> -u <USER> -p<PASS> --ssl=0 <DB>
 ```
 
 #### B. Contoh Praktis: Login Menggunakan Kredensial dari Berkas `.env`
