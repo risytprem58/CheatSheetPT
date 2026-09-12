@@ -38,10 +38,21 @@ Tampilan **rentan** (ada capability berbahaya):
 
 ```text
 www-data@jobportal:~$ getcap -r / 2>/dev/null
-/usr/bin/python3.11 cap_setuid=ep            ← RENTAN! interpreter bisa setuid(0)
-/usr/bin/perl cap_setuid=ep                  ← RENTAN! interpreter bisa setuid(0)
-/usr/bin/ping cap_net_raw=ep                 ← wajar, ping memang butuh raw socket
+
+# --- cap_setuid (spawn root shell) ---
+/usr/bin/python3 cap_setuid=ep             ← RENTAN! os.setuid(0) + exec shell
+/usr/bin/perl cap_setuid=ep                ← RENTAN! setuid(0) + exec shell
+/usr/bin/ruby cap_setuid=ep                ← RENTAN! Process.setuid(0) + exec
+/usr/bin/node cap_setuid=ep                ← RENTAN! process.setuid(0) + spawn
+/usr/bin/php cap_setuid=ep                 ← RENTAN! exec shell via script
+/usr/bin/lua cap_setuid=ep                 ← RENTAN! os.execute("/bin/sh")
+
+# --- cap_dac_read_search (baca file apa pun, tanpa shell) ---
+/usr/bin/cat cap_dac_read_search=ep        ← RENTAN! baca file apa pun
+/usr/bin/cp cap_dac_read_search=ep         ← RENTAN! salin file apa pun
 ```
+
+> **Catatan:** Fokus utama adalah interpreter dengan `cap_setuid` — langsung memberi root shell. `cap_dac_read_search` tidak memberi shell, tapi cukup untuk membaca flag langsung tanpa shell. Capability lain seperti `cap_setgid`, `cap_sys_ptrace` tetap berbahaya — daftar lengkapnya di GTFOBins → bagian **Capabilities**.
 
 Oneliner gabungan — cek SUID, sudo, dan capabilities **sekaligus** dalam satu command:
 
