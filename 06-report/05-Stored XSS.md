@@ -1,21 +1,21 @@
-# 📜 Finding 05: Stored Cross-Site Scripting (Stored XSS)
+﻿# Finding 05: Stored Cross-Site Scripting (Stored XSS)
 
 | Item | Detail |
 |------|--------|
 | **Kerentanan** | Stored Cross-Site Scripting (Stored XSS) |
-| **Severity** | 🟡 Medium |
+| **Severity** |  Medium |
 | **Skor CVSS** | 5.1 (`CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:P/VC:L/VI:L/VA:N/SC:N/SI:N/SA:N`) |
 | **Endpoint** | `POST /api/profile/update` / `PUT /api/users/{id}/profile` (Field Profil) |
 
 ---
 
-## 📌 Deskripsi
+## Deskripsi
 
 Kerentanan ini terjadi karena aplikasi menampilkan input pengguna ke halaman web tanpa sanitasi atau encoding di sisi server. Hal ini memungkinkan penyerang menyuntikkan skrip berbahaya (seperti JavaScript) yang akan dieksekusi oleh browser pengguna lain saat mengakses halaman tersebut.
 
 ---
 
-## 💥 Dampak
+## Dampak
 
 - **Pencurian Sesi dan Pengambilalihan Akun (Account Takeover):** Penyerang dapat mencuri *session cookie* atau token autentikasi milik korban untuk masuk ke dalam akun tanpa kata sandi.
 - **Pencurian Data dan Perekaman Aktivitas (Data Theft):** Skrip berbahaya dapat membaca informasi sensitif yang tampil di layar, merekam input formulir, atau mengarahkan pengguna ke situs penipuan (*phishing*).
@@ -23,9 +23,9 @@ Kerentanan ini terjadi karena aplikasi menampilkan input pengguna ke halaman web
 
 ---
 
-## 🧪 Langkah Proof of Concept (PoC)
+## Langkah Proof of Concept (PoC)
 
-### 🔹 Langkah 1 — Menyisipkan payload XSS pada saat update profil
+### Langkah 1 — Menyisipkan payload XSS pada saat update profil
 
 Mengirimkan request pembaruan profil dengan memasukkan payload JavaScript pada parameter input (seperti nama lengkap, bio, atau alamat).
 
@@ -44,11 +44,11 @@ Content-Type: application/json
 }
 ```
 
-> 📸 **[Capture Request Update Profil dengan Payload XSS]**
+>  **[Capture Request Update Profil dengan Payload XSS]**
 
 ---
 
-### 🔹 Langkah 2 — Menyimpan perubahan profil dan memverifikasi simpanan data
+### Langkah 2 — Menyimpan perubahan profil dan memverifikasi simpanan data
 
 Aplikasi merespons dengan status `200 OK` dan menyimpan payload XSS secara permanen di dalam database aplikasi (*Stored XSS*).
 
@@ -65,11 +65,11 @@ Aplikasi merespons dengan status `200 OK` dan menyimpan payload XSS secara perma
 }
 ```
 
-> 📸 **[Capture Response Sukses Update Profil]**
+>  **[Capture Response Sukses Update Profil]**
 
 ---
 
-### 🔹 Langkah 3 — Mengakses halaman profil dan mengeksekusi skrip JavaScript di browser korban
+### Langkah 3 — Mengakses halaman profil dan mengeksekusi skrip JavaScript di browser korban
 
 Saat pengguna lain (atau admin) membuka halaman profil penyerang (`GET /profile/view?id=attacker`), aplikasi menampilkan isi data bio/fullname tanpa *output encoding*, menyebabkan skrip JavaScript langsung dieksekusi oleh browser korban.
 
@@ -81,11 +81,11 @@ Host: jobportal.vulnapp.id
 **Hasil di Browser:**
 Pop-up dialog `alert(document.cookie)` atau `alert('XSS-Stored-Executed')` muncul secara otomatis pada browser korban.
 
-> 📸 **[Capture Pop-up Alert XSS Tereksekusi di Browser Korban]**
+>  **[Capture Pop-up Alert XSS Tereksekusi di Browser Korban]**
 
 ---
 
-## 🛠️ Rekomendasi Perbaikan
+## Rekomendasi Perbaikan
 
 - **Terapkan Output Encoding:** Lakukan encoding (seperti *HTML Entity Encoding*) pada semua data input pengguna sebelum ditampilkan ke layar agar dibaca sebagai teks biasa, bukan kode eksekutabel.
 - **Sanitasi Input di Sisi Server:** Gunakan pustaka sanitasi terpercaya di sisi server untuk membersihkan karakter atau tag HTML berbahaya dari input pengguna.
