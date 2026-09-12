@@ -66,7 +66,7 @@ www-data@jobportal:~$ find / -perm -4000 -type f 2>/dev/null
 
 > **Catatan:** Daftar di atas difokuskan hanya ke binary yang **langsung memberi shell**. Binary lain seperti `cp`, `tee`, `tar`, `zip`, `wget`, `curl`, `docker`, `nmap` tetap bisa diabuse (menimpa/membaca file sistem) — daftar lengkapnya di GTFOBins → bagian **SUID**. Cukup **satu** entry RENTAN untuk mendapatkan root shell.
 
-> **Oneliner gabungan:** `find / -perm -4000 -type f 2>/dev/null; sudo -l; getcap -r / 2>/dev/null` — cek SUID, sudo, dan capabilities **sekaligus** dalam satu command (dipakai pada PoC laporan, langkah eskalasi root). Breakdown, tampilan output rentan, dan langkah lanjut → [LPE_Oneliner.md](LPE_Oneliner.md)
+> **Oneliner gabungan:** `find / -perm -4000 -type f 2>/dev/null; sudo -l; getcap -r / 2>/dev/null` — cek SUID, sudo, dan capabilities **sekaligus** dalam satu command (dipakai pada PoC laporan, langkah eskalasi root). Breakdown, tampilan output rentan, dan langkah lanjut → [01-LPE_Oneliner.md](01-LPE_Oneliner.md)
 
 ---
 
