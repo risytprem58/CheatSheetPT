@@ -68,52 +68,6 @@
 
 ---
 
-## Alur Penetration Testing Umum
-
-```mermaid
-flowchart LR
-    A[Recon] --> B[Foothold]
-    B --> C[Reverse Shell]
-    C --> D[Stabilize Shell]
-    D --> E[Enumeration]
-    E --> F[GTFOBins]
-    F --> G[Privilege Escalation]
-    G --> H[Proof]
-    
-    subgraph Recon
-        A1[Network Discovery] --> A2[Port Scanning]
-        A2 --> A3[Web Directory Bruteforce]
-        A3 --> A4[Wapiti Scan]
-    end
-    
-    subgraph Foothold
-        B1[SQL Injection] --> B2[File Upload]
-        B2 --> B3[SSTI]
-        B3 --> B4[LFI]
-        B4 --> B5[Command Injection]
-    end
-    
-    subgraph ReverseShell
-        C1[Listener] --> C2[Payloads]
-        C2 --> C3[Msfvenom]
-        C3 --> C4[Stabilize TTY]
-    end
-    
-    subgraph Enumeration
-        D1[LinPEAS] --> D2[Manual Enumeration]
-        D2 --> D3[GTFOBins]
-    end
-    
-    subgraph Privesc
-        E1[Kernel LPE] --> E2[SUID]
-        E2 --> E3[Sudo]
-        E3 --> E4[Weak Permission]
-        E4 --> E5[Writable Cron]
-    end
-```
-
----
-
 ## Tips Penggunaan CheatSheet
 
 1. **Ikuti alur**: Mulai dari recon hingga proof secara berurutan.
