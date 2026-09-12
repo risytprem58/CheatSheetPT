@@ -6,7 +6,7 @@
 
 | No. | Kode Temuan | Nama Temuan / Kerentanan | Severity | Skor CVSS | Target / Endpoint |
 |---|---|---|---|---|---|
-| 1 | `FIND-01` | Arbitrary File Upload to Remote Code Execution (RCE) | Critical | 9.8 | `POST /api/resume/upload` |
+| 1 | `FIND-01` | Arbitrary File Upload to Remote Code Execution (RCE) | Critical | 9.3 | `POST /submit.php` (`http://192.168.56.105:8083`) |
 | 2 | `FIND-02` | Command Injection (OS Command Injection) | Critical | 9.8 | `GET /api/tools/ping?target=...` |
 | 3 | `FIND-03` | SQL Injection (SQLi) | Critical | 9.3 | `POST /api/auth/login`, `GET /api/jobs/search` |
 | 4 | `FIND-04` | Insecure Direct Object Reference (IDOR) | High | 8.6 | `/api/users/{id}/profile`, `/api/users/{id}` |
