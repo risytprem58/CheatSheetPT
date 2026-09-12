@@ -20,15 +20,14 @@ Pengujian keamanan (penetration testing) ini dilakukan terhadap aplikasi web Tek
 
 ## 2. Rekomendasi Utama
 
-Celah keamanan yang ditemukan pada aplikasi target bersumber dari tiga aspek utama: kelemahan manajemen kredensial dan eksposur direktori/port, belum optimalnya validasi dan penanganan input di sisi server, serta ketiadaan verifikasi otorisasi pengguna. Berikut adalah rekomendasi langkah mitigasi dan perbaikan berdasarkan masing-masing kategori kerentanan:
+Celah keamanan yang ditemukan pada aplikasi target bersumber dari tiga aspek utama: kelemahan manajemen kredensial dan eksposur direktori/port, belum optimalnya validasi dan penanganan input di sisi server, serta ketiadaan verifikasi otorisasi pengguna. Berikut adalah rekomendasi langkah mitigasi dan perbaikan berdasarkan skala prioritas keamanan:
 
-- **Credential Management & Sensitive File Exposure:** Mengganti atau menghapus default credential, menghapus informasi kredensial yang tersimpan di tempat umum, serta menutup akses langsung ke file konfigurasi atau repositori sensitif (seperti `.env`, `.git`, atau backup file).
-- **Directory Listing:** Nonaktifkan fitur pengindeksan direktori (*Directory Indexing / Directory Browsing*) pada konfigurasi web server (misalnya setel `Options -Indexes` pada Apache atau hapus directive `autoindex on` pada Nginx) agar daftar file dan folder internal tidak dapat dilihat secara terbuka oleh publik.
-- **Unnecessary Open Ports & Exposed Services:** Batasi akses publik ke port sensitif dan layanan administratif (seperti SSH port 22 atau Database MySQL port 3306) menggunakan aturan firewall (*IP Whitelisting*), hubungkan layanan database hanya ke interface lokal (`bind-address = 127.0.0.1`), serta nonaktifkan akses remote langsung untuk akun administrator/root.
+- **Credential Management & Sensitive File Exposure:** Mengganti atau menghapus informasi sensitive, serta menutup akses langsung ke file konfigurasi atau repositori sensitif
+- **Directory Listing:** Nonaktifkan fitur pengindeksan direktori (*Directory Indexing / Directory Browsing*) pada konfigurasi web server  agar daftar file dan folder internal tidak dapat dilihat secara terbuka oleh publik.
+- **Unnecessary Open Ports & Exposed Services:** Batasi akses publik ke port sensitif dan layanan administratif menggunakan firewall (*IP Whitelisting*), batasi akses ssh /database hanya ke interface lokal (`bind-address = 127.0.0.1`), serta nonaktifkan akses remote langsung untuk akun administrator/root.
 - **SQL Injection (SQLi):** Terapkan **Prepared Statements / Parameterized Queries** pada seluruh fungsi kueri database untuk menutup kerentanan SQL Injection, serta jalankan akun database dengan prinsip *least privilege*.
 - **Unrestricted File Upload:** Batasi jenis ekstensi berkas (*whitelisting*), validasi tipe MIME/header di sisi server, ubah nama file (*randomize filename*), dan simpan berkas unggahan di **direktori non-executable** atau penyimpanan terpisah.
-- **Command Injection:** Hindari pemanggilan perintah shell sistem operasi secara langsung. Gunakan API/library bawaan bahasa pemrograman, atau terapkan *allowlist* input yang sangat ketat jika eksekusi sistem tidak terhindarkan.
-- **Local File Inclusion (LFI):** Hindari meneruskan input pengguna secara langsung ke fungsi inklusi atau pembacaan file (`include`, `require`, `file_get_contents`). Gunakan pemetaan statis (*allowlist mapping*) untuk memilih file yang diizinkan.
+- **Local File Inclusion (LFI):** **Command Injection:** Hindari meneruskan input pengguna secara langsung ke fungsi eksekusi sistem (shell) atau inklusi file; gunakan allowlist statis serta fungsi/library bawaan aplikasi yang aman.
 - **IDOR (Insecure Direct Object Reference):** Terapkan mekanisme kontrol akses dan verifikasi otorisasi (*access control check*) di sisi server pada setiap pemanggilan ID atau parameter objek untuk memastikan pengguna hanya dapat mengakses data milik mereka sendiri.
 - **Cross-Site Scripting (XSS):** Terapkan sanitasi input yang masuk serta lakukan **context-aware HTML output encoding** sebelum menampilkan data masukan pengguna ke halaman aplikasi web.
 
