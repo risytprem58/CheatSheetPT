@@ -1,16 +1,16 @@
-# 🔑 Exploiting SUID (Set User ID Privilege Escalation)
+﻿# Exploiting SUID (Set User ID Privilege Escalation)
 
 > **Tujuan:** Memanfaatkan binary ber‑SUID milik **root** untuk mempertahankan **effective UID (euid=0)** dan mendapatkan shell sebagai **root**.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 **SUID (Set User ID)** adalah bit permission pada file Unix/Linux yang menyebabkan file dieksekusi dengan **effective UID** pemilik file. Jika binary SUID dimiliki **root** dan dapat disalahgunakan, attacker dapat memperoleh **root shell**.
 
 ---
 
-## 🛡️ Cari Binary SUID
+## Cari Binary SUID
 
 ```bash
 find / -perm -4000 -type f 2>/dev/null
@@ -29,13 +29,13 @@ Contoh output:
 
 ---
 
-## 🧪 Cek GTFOBins
+## Cek GTFOBins
 
 Untuk tiap binary → cek di [https://gtfobins.github.io](https://gtfobins.github.io) bagian **SUID** untuk melihat apakah binary tersebut dapat disalahgunakan.
 
 ---
 
-## 💥 Pola Umum Eksploitasi
+## Pola Umum Eksploitasi
 
 ```bash
 ./binary -p ...                       # -p mempertahankan euid
@@ -55,7 +55,7 @@ awk 'BEGIN{system("/bin/sh")}'        # SUID awk (mawk)
 
 ---
 
-## ⚠️ Catatan Penting — Privilege Drop
+## Catatan Penting — Privilege Drop
 
 Payload yang menggunakan `system()` → `/bin/sh` (dash) dapat **menurunkan privilege**.
 
@@ -68,7 +68,7 @@ Payload yang menggunakan `system()` → `/bin/sh` (dash) dapat **menurunkan priv
 
 ---
 
-## 🪜 Alur Eksploitasi
+## Alur Eksploitasi
 
 ```text
 Cari SUID
@@ -86,7 +86,7 @@ Verifikasi privilege dengan id
 
 ---
 
-## 📋 Checklist SUID LPE
+## Checklist SUID LPE
 
 - [ ] Jalankan `find / -perm -4000 -type f 2>/dev/null`.
 - [ ] Identifikasi binary SUID milik root.
@@ -97,7 +97,7 @@ Verifikasi privilege dengan id
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [GTFOBins – SUID](https://gtfobins.github.io/)
 - [Linux Man Page – SUID](https://man7.org/linux/man-pages/man2/setuid.2.html)
