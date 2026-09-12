@@ -9,7 +9,7 @@
 
 | Item | Detail |
 |------|--------|
-| **Default Port** | `3306/tcp` |
+| **Default Port** | `3306/tcp` (atau port kustom seperti `3307`, `33060`) |
 | **Default Users** | `root`, `admin`, `guest`, `dbuser` |
 | **Config File** | Linux: `/etc/mysql/mysql.conf.d/mysqld.cnf`, `/etc/my.cnf`<br>Windows: `C:\ProgramData\MySQL\MySQL Server X.X\my.ini` |
 | **Default Passwords** | *kosong*, `root`, `toor`, `admin`, `password`, `123456` |
@@ -24,7 +24,7 @@
 # Scan port 3306 (atau port kustom, misal -p 3307) & cek versi service
 nmap -p 3306 -sV <TARGET>
 
-# Jalankan skrip enumerasi MySQL bawaan Nmap pada port kustom
+# Jalankan skrip enumerasi MySQL bawaan Nmap
 nmap -p 3306 --script mysql-enum,mysql-info,mysql-empty-password <TARGET>
 
 # Audit password lemah/kosong dengan Nmap NSE
@@ -113,6 +113,24 @@ SHOW COLUMNS FROM users;
 -- Dump data dari tabel
 SELECT * FROM users;
 SELECT username, password, email FROM users;
+```
+
+---
+
+### 3. Enumerasi Hak Akses & Konfigurasi Penting
+
+```sql
+-- Cek hak akses (grants) milik user saat ini
+SHOW GRANTS FOR CURRENT_USER();
+
+-- Cek nilai secure_file_priv (Kritis untuk Arbitrary File Read/Write)
+-- Jika NULL: fitur LOAD_FILE dan INTO OUTFILE dimatikan
+-- Jika kosong (""): bebas baca/tulis ke direktori mana saja
+-- Jika path (misal "/var/lib/mysql-files/"): hanya terbatas di folder tersebut
+SHOW VARIABLES LIKE 'secure_file_priv';
+
+-- Cek lokasi folder plugin MySQL
+SELECT @@plugin_dir;
 ```
 
 ---
