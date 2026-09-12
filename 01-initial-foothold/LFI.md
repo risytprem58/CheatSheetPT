@@ -1,16 +1,16 @@
-# 📂 LFI (Local File Inclusion) — Membaca File Sensitif di Server
+﻿# LFI (Local File Inclusion) — Membaca File Sensitif di Server
 
 > **Tujuan:** Mengeksploitasi kerentanan *Local File Inclusion* untuk membaca file konfigurasi, kredensial, dan kode sumber aplikasi.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 LFI terjadi ketika aplikasi web **memasukkan path file dari input user** (parameter URL) tanpa validasi, sehingga attacker bisa membaca file apa pun di server yang boleh diakses oleh web server.
 
 ---
 
-## 🔍 Ciri-Ciri Aplikasi Rentan
+## Ciri-Ciri Aplikasi Rentan
 
 - Parameter URL berisi path file: `?page=index.php`, `?lang=en`, `?template=home`.
 - Path file **ditampilkan kembali** dalam response.
@@ -19,7 +19,7 @@ LFI terjadi ketika aplikasi web **memasukkan path file dari input user** (parame
 
 ---
 
-## ⚙️ Payload Dasar (Path Traversal)
+## Payload Dasar (Path Traversal)
 
 ### Baca `/etc/passwd`
 
@@ -34,7 +34,7 @@ LFI terjadi ketika aplikasi web **memasukkan path file dari input user** (parame
 
 ---
 
-## 🪜 Cheat Sheet Path Traversal
+## Cheat Sheet Path Traversal
 
 ```text
 Linux:
@@ -49,7 +49,7 @@ Windows:
 
 ---
 
-## 🔓 Teknik Bypass Filter
+## Teknik Bypass Filter
 
 ### 1. Double Dot Slash Bypass
 
@@ -93,7 +93,7 @@ Windows:
 
 ---
 
-## 📂 Target File Penting
+## Target File Penting
 
 ### Linux
 
@@ -122,7 +122,7 @@ C:\Users\<user>\Desktop\flag.txt
 
 ---
 
-## 🎯 LFI ke RCE (Remote Code Execution)
+## LFI ke RCE (Remote Code Execution)
 
 ### 1. PHP Filter — Source Code Disclosure
 
@@ -191,7 +191,7 @@ curl -A "[MALICIOUS_UA_WITH_CODE]" http://<TARGET>/
 
 ---
 
-## 🔎 Discovery LFI (Cara Menemukan)
+## Discovery LFI (Cara Menemukan)
 
 ### 1. Cek Parameter Berisiko
 
@@ -213,7 +213,7 @@ nikto -h http://<TARGET>
 
 ---
 
-## 📋 Tabel Ringkasan LFI
+## Tabel Ringkasan LFI
 
 | Teknik | Tujuan |
 |--------|--------|
@@ -227,7 +227,7 @@ nikto -h http://<TARGET>
 
 ---
 
-## ⚠️ Catatan Penting
+## Catatan Penting
 
 - **Cek permission**: User web server (`www-data`) hanya bisa baca file yang readable.
 - **Shadow file butuh root**: `/etc/shadow` biasanya 640, gagal dengan www-data.
@@ -237,7 +237,7 @@ nikto -h http://<TARGET>
 
 ---
 
-## ✅ Checklist LFI
+## Checklist LFI
 
 - [ ] Identifikasi parameter berisiko (`?page=`, `?file=`, `?lang=`).
 - [ ] Test path traversal (`../../../etc/passwd`).
@@ -249,7 +249,7 @@ nikto -h http://<TARGET>
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [OWASP – Path Traversal](https://owasp.org/www-community/attacks/Path_Traversal)
 - [PayloadsAllTheThings – LFI](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/File%20Inclusion)
