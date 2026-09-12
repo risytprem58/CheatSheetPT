@@ -1,16 +1,16 @@
-# 🎨 Server‑Side Template Injection (SSTI) — Eksekusi Kode Lewat Template
+﻿# Server‑Side Template Injection (SSTI) — Eksekusi Kode Lewat Template
 
 > **Tujuan:** Mengeksekusi perintah di server dengan menyisipkan ekspresi template engine (Jinja2, Twig, dll.) yang diproses oleh aplikasi.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 SSTI terjadi ketika input pengguna **dirender sebagai bagian template** (bukan data), memungkinkan attacker menyuntik ekspresi yang dieksekusi engine.
 
 ---
 
-## 🕵️ Deteksi (Dasar)
+## Deteksi (Dasar)
 
 ```
 {{7*7}}       # Jinja2 / Twig
@@ -23,7 +23,7 @@ ${7*7}        # Expression Language
 
 ---
 
-## 🐍 Jinja2 (Python/Flask)
+## Jinja2 (Python/Flask)
 
 ### Identifikasi Template Context
 
@@ -57,7 +57,7 @@ Potensi RCE
 
 ---
 
-## 🐘 Twig (PHP)
+## Twig (PHP)
 
 ```
 {{ _self.env.registerUndefinedFilterCallback("exec") }}
@@ -68,7 +68,7 @@ Potensi RCE
 
 ---
 
-## ⚠️ Dampak SSTI
+## Dampak SSTI
 
 ```text
 SSTI → Template Injection → Akses Context → Object/Function → Code Execution → RCE
@@ -76,7 +76,7 @@ SSTI → Template Injection → Akses Context → Object/Function → Code Execu
 
 ---
 
-## 🛡️ Pencegahan
+## Pencegahan
 
 - Jangan render input pengguna langsung sebagai template.
 - Gunakan sandboxing sesuai template engine.
@@ -86,7 +86,7 @@ SSTI → Template Injection → Akses Context → Object/Function → Code Execu
 
 ---
 
-## ✅ Checklist SSTI
+## Checklist SSTI
 
 - [ ] Deteksi dengan `{{7*7}}` (atau sintaks engine target).
 - [ ] Identifikasi engine (Jinja2, Twig, Freemarker, dll).
@@ -96,7 +96,7 @@ SSTI → Template Injection → Akses Context → Object/Function → Code Execu
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [PortSwigger – Server‑Side Template Injection](https://portswigger.net/web-security/server-side-template-injection)
 - [HackTricks – SSTI](https://book.hacktricks.xyz/pentesting-web/ssti-server-side-template-injection)
