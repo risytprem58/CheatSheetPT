@@ -1,16 +1,16 @@
-# 🔑 Exploiting Sudo (sudo Privilege Escalation)
+﻿# Exploiting Sudo (sudo Privilege Escalation)
 
 > **Tujuan:** Memanfaatkan konfigurasi `sudo` yang longgar untuk menjalankan **shell sebagai root** melalui binary yang diizinkan.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 `sudo` memungkinkan user menjalankan command dengan privilege user lain (biasanya **root**). Jika konfigurasi sudo memberikan akses ke binary tertentu tanpa batasan, binary tersebut dapat disalahgunakan untuk **privilege escalation**.
 
 ---
 
-## 🛡️ Cek Hak Sudo
+## Cek Hak Sudo
 
 ```bash
 sudo -l
@@ -27,13 +27,13 @@ Perhatikan entry seperti:
 
 ---
 
-## 🧪 Cek GTFOBins
+## Cek GTFOBins
 
 Untuk setiap binary yang diizinkan → cek di [https://gtfobins.github.io](https://gtfobins.github.io) bagian **Sudo** untuk melihat apakah binary tersebut memiliki teknik privilege escalation.
 
 ---
 
-## 💥 Contoh Eksploitasi
+## Contoh Eksploitasi
 
 ```bash
 sudo vim -c ':!/bin/sh'                            # vim
@@ -55,7 +55,7 @@ sudo env /bin/sh                                   # env
 
 ---
 
-## 🧨 Vektor Lain
+## Vektor Lain
 
 ### CVE‑2021‑3156 (Baron Samedit)
 
@@ -73,7 +73,7 @@ Library berbahaya akan dieksekusi sebagai **root** saat sudo dijalankan.
 
 ---
 
-## 🪜 Alur Eksploitasi
+## Alur Eksploitasi
 
 ```text
 sudo -l
@@ -93,7 +93,7 @@ id → verifikasi root
 
 ---
 
-## 📋 Checklist Sudo LPE
+## Checklist Sudo LPE
 
 - [ ] Jalankan `sudo -l` untuk melihat hak sudo.
 - [ ] Identifikasi setiap binary yang diizinkan.
@@ -105,7 +105,7 @@ id → verifikasi root
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [GTFOBins – Sudo](https://gtfobins.github.io/)
 - [Sudo Security Advisories (Baron Samedit)](https://www.sudo.ws/security/advisories/)
