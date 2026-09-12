@@ -1,11 +1,11 @@
-# 📡 Port Scanning — Memindai Port dan Service
+﻿# Port Scanning — Memindai Port dan Service
 
 > **Tujuan:** Mengidentifikasi port yang terbuka dan service yang berjalan pada target.
 > **Tools utama:** `nmap`
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 - **-sV** → Cek versi service di port.
 - **-sC** → Jalankan default script scan.
@@ -14,7 +14,7 @@
 
 ---
 
-## ⚙️ Langkah-Langkah (dari yang mudah ke sulit)
+## Langkah-Langkah (dari yang mudah ke sulit)
 
 ### Langkah 1: Quick Scan (1000 Port Teratas)
 
@@ -71,7 +71,7 @@ nmap -sV -p- --min-rate 5000 <TARGET>
 
 ---
 
-## 🔍 Port Penting yang Perlu Diperhatikan
+## Port Penting yang Perlu Diperhatikan
 
 | Port | Service | Aksi |
 |------|---------|------|
@@ -84,7 +84,7 @@ nmap -sV -p- --min-rate 5000 <TARGET>
 
 ---
 
-## ⚠️ Catatan Penting
+## Catatan Penting
 
 - Scan full port lebih lambat tapi lebih komprehensif.
 - `--min-rate` hanya jika tidak ada IDS/IPS.
@@ -92,7 +92,7 @@ nmap -sV -p- --min-rate 5000 <TARGET>
 
 ---
 
-## ✅ Checklist Setelah Port Scanning
+## Checklist Setelah Port Scanning
 
 - [ ] Port & service terbuka
 - [ ] Version service
@@ -101,6 +101,6 @@ nmap -sV -p- --min-rate 5000 <TARGET>
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [Nmap Documentation](https://nmap.org/book/man.html)
