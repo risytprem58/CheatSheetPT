@@ -14,7 +14,5 @@
 | **Jenis Pengujian** | Web Application Penetration Testing (Black Box / Grey Box) |
 | **Waktu Pengujian** | Jum’at, 11 September 2025 Pukul 10.00 s.d 12.00 WIB |
 | **Klasifikasi Dokumen** | RAHASIA |
-| **Ruang Lingkup (Scope)** | Web Application `TeknoBantu` (In-Scope)<br>Web Application `KlaimKu` (In-Scope) |
-| **Ketentuan Pengujian** | Pengujian terukur tanpa mengganggu ketersediaan layanan sistem |
 | **Versi Laporan** | v1.0 |
 
