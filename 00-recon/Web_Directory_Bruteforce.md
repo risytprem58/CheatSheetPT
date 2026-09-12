@@ -1,11 +1,11 @@
-# 🌐 Web Directory Brute Force — Mencari Direktori Tersembunyi
+﻿# Web Directory Brute Force — Mencari Direktori Tersembunyi
 
 > **Tujuan:** Menemukan direktori, file, dan endpoint tersembunyi pada web server.
 > **Tools utama:** `dirsearch`, `feroxbuster`, `dirb`, `ffuf`
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 | Tool | Kelebihan | Penggunaan |
 |------|-----------|------------|
@@ -16,7 +16,7 @@
 
 ---
 
-## ⚙️ Langkah-Langkah (dari yang mudah ke sulit)
+## Langkah-Langkah (dari yang mudah ke sulit)
 
 ### Langkah 1: Dirsearch (Enumeration Dasar)
 
@@ -117,20 +117,20 @@ uploads     [Status: 301, Size: 0]
 
 ---
 
-## 📋 Status Code yang Perlu Diperhatikan
+## Status Code yang Perlu Diperhatikan
 
 | Code | Arti | Aksi |
 |------|------|------|
-| **200** | OK - Resource ditemukan | ✅ Investigasi |
-| **301/302** | Redirect | ⚠️ Cek target redirect |
-| **401** | Unauthorized | 🔐 Butuh autentikasi |
-| **403** | Forbidden | ⚠️ Ada tapi ditolak |
-| **404** | Not Found | ❌ Skip |
-| **500** | Internal Server Error | ⚠️ Potensi bug |
+| **200** | OK - Resource ditemukan |  Investigasi |
+| **301/302** | Redirect |  Cek target redirect |
+| **401** | Unauthorized |  Butuh autentikasi |
+| **403** | Forbidden |  Ada tapi ditolak |
+| **404** | Not Found |  Skip |
+| **500** | Internal Server Error |  Potensi bug |
 
 ---
 
-## 📚 Wordlist Default Kali Linux
+## Wordlist Default Kali Linux
 
 ### Dirb
 
@@ -160,7 +160,7 @@ sudo gzip -d /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt.gz
 
 ---
 
-## ⚠️ Catatan Penting
+## Catatan Penting
 
 - Response `403` tetap perlu diperhatikan — bisa berarti resource ada tapi ditolak.
 - Response `3xx` bisa mengungkap endpoint lain.
@@ -168,7 +168,7 @@ sudo gzip -d /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt.gz
 
 ---
 
-## ✅ Checklist Setelah Directory Bruteforce
+## Checklist Setelah Directory Bruteforce
 
 - [ ] Catat semua endpoint yang ditemukan
 - [ ] Identifikasi page menarik (admin, upload, config)
@@ -178,7 +178,7 @@ sudo gzip -d /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt.gz
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [Dirsearch GitHub](https://github.com/maurosoria/dirsearch)
 - [Feroxbuster](https://github.com/epi052/feroxbuster)
