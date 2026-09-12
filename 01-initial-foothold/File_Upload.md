@@ -1,16 +1,16 @@
-# 📤 File Upload — Mengunggah Webshell ke Server
+﻿# File Upload — Mengunggah Webshell ke Server
 
 > **Tujuan:** Mengeksploitasi fitur upload file yang tidak aman untuk menaruh **webshell** dan mendapatkan akses eksekusi perintah di server.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 Kerentanan File Upload terjadi ketika aplikasi **tidak memvalidasi tipe, ekstensi, atau konten** file yang di-upload. Dampaknya: webshell, defacement, atau bahkan full server takeover.
 
 ---
 
-## 🔍 Ciri-Ciri Aplikasi Rentan
+## Ciri-Ciri Aplikasi Rentan
 
 - Form upload menerima file tanpa validasi ekstensi.
 - Server menyimpan file di lokasi yang dapat diakses publik (mis. `/uploads/`).
@@ -20,7 +20,7 @@ Kerentanan File Upload terjadi ketika aplikasi **tidak memvalidasi tipe, ekstens
 
 ---
 
-## 🎯 Tujuan Utama
+## Tujuan Utama
 
 Mengunggah file yang **dieksekusi sebagai script** oleh web server:
 
@@ -34,7 +34,7 @@ Mengunggah file yang **dieksekusi sebagai script** oleh web server:
 
 ---
 
-## 🪜 Langkah Eksploitasi
+## Langkah Eksploitasi
 
 ### Step 1: Siapkan Webshell
 
@@ -91,7 +91,7 @@ Linux victim 5.15.0-... #1 SMP ...
 ```
 
 ---
-## 🛡️ Teknik Bypass Filter
+## Teknik Bypass Filter
 
 ### 1. Bypass Blacklist Ekstensi
 
@@ -148,7 +148,7 @@ shell.php;.jpg
 
 ---
 
-## 🖼️ Bypass Content-Type Validation
+## Bypass Content-Type Validation
 
 Server cek `Content-Type` dari request header, bukan isi file. Override dengan:
 
@@ -167,7 +167,7 @@ Content-Type: application/octet-stream
 
 ---
 
-## 🎥 Bypass MIME / Magic Number Validation
+## Bypass MIME / Magic Number Validation
 
 Server validasi **isi file** (bukan ekstensi). Sisipkan PHP code di metadata JPEG:
 
@@ -188,7 +188,7 @@ printf 'GIF89a<?php system($_GET["cmd"]); ?>' > shell.gif.php
 
 ---
 
-## 🔓 Upload + LFI Combination
+## Upload + LFI Combination
 
 Jika server hanya menerima gambar, gunakan PHP wrapper via LFI:
 
@@ -199,7 +199,7 @@ Jika server hanya menerima gambar, gunakan PHP wrapper via LFI:
 
 ---
 
-## 🛠️ Tools Bantu
+## Tools Bantu
 
 ### Burp Suite (Intercept Upload)
 
@@ -221,7 +221,7 @@ python3 fuxploider.py -u http://<TARGET>/upload.php --not-found-url "404"
 
 ---
 
-## 📋 Tabel Ringkasan Bypass
+## Tabel Ringkasan Bypass
 
 | Filter | Bypass |
 |--------|--------|
@@ -234,7 +234,7 @@ python3 fuxploider.py -u http://<TARGET>/upload.php --not-found-url "404"
 
 ---
 
-## ⚠️ Catatan Penting
+## Catatan Penting
 
 - **Cek permission folder upload**: Folder harus executable untuk PHP dijalankan.
 - **Cek `.htaccess`**: Kadang `/uploads/` punya `.htaccess` yang disable PHP.
@@ -244,7 +244,7 @@ python3 fuxploider.py -u http://<TARGET>/upload.php --not-found-url "404"
 
 ---
 
-## ✅ Checklist File Upload
+## Checklist File Upload
 
 - [ ] Identifikasi endpoint upload (`/upload.php`, form).
 - [ ] Coba upload file gambar biasa (test baseline).
@@ -259,7 +259,7 @@ python3 fuxploider.py -u http://<TARGET>/upload.php --not-found-url "404"
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [OWASP – File Upload](https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload)
 - [PayloadsAllTheThings – Upload](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Upload%20Insecure%20Files)
