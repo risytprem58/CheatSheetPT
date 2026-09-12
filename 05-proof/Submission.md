@@ -1,16 +1,16 @@
-# ✅ Submission / Proof of Compromise (WAJIB untuk Submission)
+﻿# Submission / Proof of Compromise (WAJIB untuk Submission)
 
 > **Tujuan:** Mengumpulkan **bukti sah** bahwa target berhasil dikompromikan hingga **root**. Bukti biasanya diminta dalam bentuk **screenshot** atau **teks output** saat submission.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 Submission **Proof** adalah tahap akhir dari pentest. File ini memuat **perintah verifikasi** yang dijalankan setelah privilege escalation berhasil, untuk membuktikan bahwa kita memiliki akses **root** pada target.
 
 ---
 
-## 🛡️ Bukti Standar (Wajib)
+## Bukti Standar (Wajib)
 
 ```bash
 id          # Tunjukkan uid=0(root) euid=0(root)
@@ -29,7 +29,7 @@ htb-staff-001
 
 ---
 
-## 🧪 Bukti Tambahan (Opsional tapi Direkomendasikan)
+## Bukti Tambahan (Opsional tapi Direkomendasikan)
 
 ```bash
 # 1. Akses /etc/shadow
@@ -48,7 +48,7 @@ ls -la /root
 
 ---
 
-## 📋 Checklist Submission
+## Checklist Submission
 
 - [ ] Tunjukkan `id` → `uid=0(root)`.
 - [ ] Tunjukkan `hostname` → nama box target.
@@ -59,7 +59,7 @@ ls -la /root
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [OWASP – Pentest Reporting](https://owasp.org/www-project-pentest-reporting/)
 - [HackTheBox – Submission Guidelines](https://www.hackthebox.com/)
