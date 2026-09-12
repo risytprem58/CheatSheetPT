@@ -1,58 +1,58 @@
-# 🛡️ Pentesting CheatSheet — Lab Reference
+﻿# Pentesting CheatSheet — Lab Reference
 
 > **Referensi lengkap untuk penetration testing:**  
 > **Recon** → **Foothold** → **Reverse Shell** → **Enumeration** → **Privilege Escalation** → **Proof**
 
 ---
 
-## 📁 Struktur Direktori
+## Struktur Direktori
 
 ```
 .
-├── 📂 00-recon/                  # Reconnaissance: pengenalan target
-│   ├── 🔍 Network_Discovery.md     # Temukan host aktif di jaringan
-│   ├── 📡 Port_Scanning.md         # Identifikasi layanan terbuka
-│   ├── 🛡️ Wapiti Vulnerability Scanner.md  # Audit otomatis kerentanan web
-│   └── 🌐 Web_Directory_Bruteforce.md     # Cari direktori tersembunyi
-├── 📂 01-initial-foothold/       # Mendapatkan akses awal
-│   ├── 💉 Command_Injection.md     # Eksekusi command arbitrer
-│   ├── 📤 File_Upload.md           # Unggah webshell
-│   ├── 📂 LFI.md                   # Include file lokal
-│   ├── 🗃️ SQL_Injection.md         # Eksploitasi kerentanan SQL
-│   ├── 🎨 SSTI.md                  # Injeksi template sisi server
-│   └── 📜 XSS.md                   # Koleksi payload Cross-Site Scripting (XSS)
-├── 📂 02-reverse-shell/          # Membangun koneksi balik ke attacker
-│   ├── 💉 Command_Injection.md     # Reverse shell via command injection
-│   ├── 👂 Listener.md              # Siapkan penerima di attacker
-│   ├── 🛠️ Msfvenom.md              # Generate payload dengan Metasploit
-│   └── 🪟 Stabilize_TTY.md         # Jadikan shell interaktif
-├── 📂 03-enumeration/            # Gathering informasi sistem
-│   ├── ⚙️ LinPEAS.md               # Otomatisasi enumeration Linux
-│   ├── ✍️ Manual_Enumeration.md    # Teknik enumeration manual
-│   └── 🐧 GTFOBins.md              # Eksploitasi binary SUID/sudo
-├── 📂 04-privilege-escalation/   # Naikkan privilege ke root
-│   ├── 🔥 CopyFail.md              # Kernel LPE — CVE-2026-31431
-│   ├── 💥 DirtyFrag.md             # Kernel LPE — CVE-2026-43284/43500
-│   ├── 🚀 Kernel_LPE.md            # Ringkasan kernel exploits
-│   ├── 🔑 Sudo.md                  # Konfigurasi sudo yang tidak aman
-│   ├── 🔐 SUID.md                  # Manipulasi binary SUID
-│   ├── 🔓 Weak_Permission.md       # File dengan permission longgar
-│   └── ⏰ Writable_Cron.md         # Cron job yang dapat dimodifikasi
-└── 📂 05-proof/                  # Bukti bahwa akses root sudah diperoleh
-│   └── ✅ Submission.md           # Tampilkan id dan hostname
-└── 📂 06-report/                 # Laporan pentest & detail temuan
-    ├── 📝 01-Executive Summary.md # Ringkasan eksekutif laporan pentest
-    ├── 🗃️ 02-SQL Injection.md    # Detail temuan SQL Injection
-    ├── 🔓 03-IDOR.md             # Detail temuan IDOR
-    ├── 📤 04-Unrestricted File Upload.md # Detail temuan File Upload RCE
-    ├── 📜 05-Stored XSS.md       # Detail temuan Stored XSS
-    ├── 📂 06-Local File Inclusion.md # Detail temuan Local File Inclusion (LFI)
-    └── ⚡ 07-Command Injection.md # Detail temuan Command Injection
+├──  00-recon/                  # Reconnaissance: pengenalan target
+│   ├──  Network_Discovery.md     # Temukan host aktif di jaringan
+│   ├──  Port_Scanning.md         # Identifikasi layanan terbuka
+│   ├──  Wapiti Vulnerability Scanner.md  # Audit otomatis kerentanan web
+│   └──  Web_Directory_Bruteforce.md     # Cari direktori tersembunyi
+├──  01-initial-foothold/       # Mendapatkan akses awal
+│   ├──  Command_Injection.md     # Eksekusi command arbitrer
+│   ├──  File_Upload.md           # Unggah webshell
+│   ├──  LFI.md                   # Include file lokal
+│   ├──  SQL_Injection.md         # Eksploitasi kerentanan SQL
+│   ├──  SSTI.md                  # Injeksi template sisi server
+│   └──  XSS.md                   # Koleksi payload Cross-Site Scripting (XSS)
+├──  02-reverse-shell/          # Membangun koneksi balik ke attacker
+│   ├──  Command_Injection.md     # Reverse shell via command injection
+│   ├──  Listener.md              # Siapkan penerima di attacker
+│   ├──  Msfvenom.md              # Generate payload dengan Metasploit
+│   └──  Stabilize_TTY.md         # Jadikan shell interaktif
+├──  03-enumeration/            # Gathering informasi sistem
+│   ├──  LinPEAS.md               # Otomatisasi enumeration Linux
+│   ├──  Manual_Enumeration.md    # Teknik enumeration manual
+│   └──  GTFOBins.md              # Eksploitasi binary SUID/sudo
+├──  04-privilege-escalation/   # Naikkan privilege ke root
+│   ├──  CopyFail.md              # Kernel LPE — CVE-2026-31431
+│   ├──  DirtyFrag.md             # Kernel LPE — CVE-2026-43284/43500
+│   ├──  Kernel_LPE.md            # Ringkasan kernel exploits
+│   ├──  Sudo.md                  # Konfigurasi sudo yang tidak aman
+│   ├──  SUID.md                  # Manipulasi binary SUID
+│   ├──  Weak_Permission.md       # File dengan permission longgar
+│   └──  Writable_Cron.md         # Cron job yang dapat dimodifikasi
+└──  05-proof/                  # Bukti bahwa akses root sudah diperoleh
+│   └──  Submission.md           # Tampilkan id dan hostname
+└──  06-report/                 # Laporan pentest & detail temuan
+    ├──  01-Executive Summary.md # Ringkasan eksekutif laporan pentest
+    ├──  02-SQL Injection.md    # Detail temuan SQL Injection
+    ├──  03-IDOR.md             # Detail temuan IDOR
+    ├──  04-Unrestricted File Upload.md # Detail temuan File Upload RCE
+    ├──  05-Stored XSS.md       # Detail temuan Stored XSS
+    ├──  06-Local File Inclusion.md # Detail temuan Local File Inclusion (LFI)
+    └──  07-Command Injection.md # Detail temuan Command Injection
 ```
 
 ---
 
-## 📋 Daftar Isi Lengkap
+## Daftar Isi Lengkap
 
 | No | Folder | Topik | Deskripsi Singkat |
 |----|--------|-------|-------------------|
@@ -66,7 +66,7 @@
 
 ---
 
-## 🔄 Alur Penetration Testing Umum
+## Alur Penetration Testing Umum
 
 ```mermaid
 flowchart LR
@@ -112,7 +112,7 @@ flowchart LR
 
 ---
 
-## 💡 Tips Penggunaan CheatSheet
+## Tips Penggunaan CheatSheet
 
 1. **Ikuti alur**: Mulai dari recon hingga proof secara berurutan.
 2. **Sesuaikan dengan target**: Tidak semua teknik perlu digunakan.
@@ -123,12 +123,12 @@ flowchart LR
 
 ---
 
-## 📚 Referensi & Sumber
+## Referensi & Sumber
 
 - [w4h4z / Pentest-Cheat-Sheet](https://github.com/w4h4z/Pentest-Cheat-Sheet/tree/main/)
 
 ---
 
-## ⚠️ Legal Disclaimer
+## Legal Disclaimer
 
 Seluruh teknik dalam cheat sheet ini hanya untuk **keperluan edukasi** dan **uji penetrasi resmi** pada sistem yang Anda miliki atau sistem dengan **izin tertulis**. Penyalahgunaan terhadap sistem yang tidak berizin adalah **tindakan ilegal** dan melanggar hukum yang berlaku.
