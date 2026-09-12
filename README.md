@@ -35,6 +35,7 @@
 │   ├──  CopyFail.md              # Kernel LPE — CVE-2026-31431
 │   ├──  DirtyFrag.md             # Kernel LPE — CVE-2026-43284/43500
 │   ├──  Kernel_LPE.md            # Ringkasan kernel exploits
+│   ├──  LPE_Oneliner.md          # Oneliner enumerasi SUID/sudo/capabilities
 │   ├──  Sudo.md                  # Konfigurasi sudo yang tidak aman
 │   ├──  SUID.md                  # Manipulasi binary SUID
 │   ├──  Weak_Permission.md       # File dengan permission longgar
@@ -61,7 +62,7 @@
 | 2 | `01-initial-foothold/` | **Mendapatkan Akses Awal** | SQL injection, file upload, SSTI, LFI, command injection, XSS |
 | 3 | `02-reverse-shell/` | **Reverse Shell** | Listener, payload generation, stabilization, command injection |
 | 4 | `03-enumeration/` | **Enumerasi Sistem** | LinPEAS, manual enumeration, GTFOBins |
-| 5 | `04-privilege-escalation/` | **Privilege Escalation** | Kernel exploits (DirtyFrag, CopyFail), SUID, sudo, capabilities, weak permissions, cron |
+| 5 | `04-privilege-escalation/` | **Privilege Escalation** | Kernel exploits (DirtyFrag, CopyFail), SUID, sudo, capabilities, weak permissions, cron, oneliner enumerasi |
 | 6 | `05-proof/` | **Bukti Akses** | Verifikasi `uid=0` dan hostname |
 | 7 | `06-report/` | **Laporan Pentest** | Executive summary & detail temuan (SQL Injection, dll) |
 
