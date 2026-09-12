@@ -39,29 +39,24 @@ http://10.0.2.10:80/uploads/    [CODE:301|REDIRECT]
 http://10.0.2.10:80/config.php  [CODE:200|SIZE:2048]
 ```
 
-> **Catatan:** `/admin/` dan `/uploads/` menarik untuk investigasi.
+> **Catatan:** `/admin/` dan `/uploads/` menarik untuk investigasi. **Wajib membuka `robots.txt` (`http://<TARGET>/robots.txt`)** dan **`.env` (`http://<TARGET>/.env`)** untuk mengecek direktori rahasia atau file kredensial sensitif.
 
 ---
 
 ### Langkah 2: Feroxbuster (Recursive Scan)
 
-sejauh ini paling ampuh pakai wordlist dirb
 ```bash
-feroxbuster -u http://<TARGET>:PORT/ -w /usr/share/dirb/wordlists/common.txt
+# Scan dengan wordlist DIRB common
+feroxbuster -u http://<TARGET>:PORT/ -w /usr/share/wordlists/dirb/common.txt
+
+# Scan dengan wordlist SecLists raft-medium-directories
+feroxbuster -u http://<TARGET>:PORT/ -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt
+
+# Filter berdasarkan status code (misal 200-399)
+feroxbuster -u http://<TARGET>:PORT/ -s 200,201,202,204,301,302,307,308
 ```
 
-pakai wordlist ferox sendiri yang ada di  /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt
-
-```bash
-feroxbuster -u http://<TARGET>:PORT/
-```
-
-```bash
-feroxbuster -u http://<TARGET>:PORT/ -s 200-399
-```
-```bash
-feroxbuster -u http://target-website.com/ -w wordlist.txt -s 200,201,202,204,301,302,307,308
-```
+> **Penjelasan:** Feroxbuster bekerja secara independen dan mendukung rekursif cepat. Kombinasi wordlist `common.txt` dari DIRB atau SecLists `raft-medium-directories.txt` sangat direkomendasikan. **Wajib membuka `robots.txt`** untuk melihat direktori tersembunyi yang disengaja di-`Disallow`.
 
 **Contoh output:**
 
@@ -87,7 +82,7 @@ dirb http://<TARGET>:PORT/ /usr/share/wordlists/dirb/common.txt
 **Scan dengan extension tertentu:**
 
 ```bash
-dirb http://10.10.10.6:8000/ /usr/share/dirb/wordlists/common.txt -X .php,.html,.aspx,.jsp,.js,.txt,.zip -r
+dirb http://10.10.10.6:8000/ /usr/share/wordlists/dirb/common.txt -X .php,.html,.aspx,.jsp,.js,.txt,.zip -r
 # -X: Extension yang dicari
 # -r: Recursive
 ```
@@ -98,6 +93,8 @@ dirb http://10.10.10.6:8000/ /usr/share/dirb/wordlists/common.txt -X .php,.html,
 dirb http://10.10.10.6:8000/admin/ -c "PHPSESSID=a1b2c3d4e5f6..."
 # -c: Kirim HTTP Cookie
 ```
+
+> **Catatan:** **Wajib membuka `robots.txt`** secara manual untuk memeriksa path terlarang/rahasia sebelum atau saat menjalankan Dirb.
 
 ---
 
@@ -117,6 +114,8 @@ ffuf -u http://<TARGET>:PORT/FUZZ \
 # -mc 200: hanya tampilkan 200
 # -mc 300-399: hanya tampilkan redirect
 ```
+
+> **Catatan:** **Wajib mengecek `robots.txt` dan `.env`** terlebih dahulu untuk menemukan path rahasia dan berkas konfigurasi sebelum fuzzing skala besar.
 
 **Contoh output:**
 
@@ -153,7 +152,7 @@ uploads     [Status: 301, Size: 0]
 # Lebih lengkap
 ```
 
-### Dirbuster
+### Dirbuster / SecLists
 
 ```bash
 /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt
@@ -161,6 +160,16 @@ uploads     [Status: 301, Size: 0]
 
 /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
 # Sangat lengkap
+
+/usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt
+# Wordlist dari SecLists (raft-medium-directories.txt)
+```
+
+### Feroxbuster
+
+```bash
+/usr/share/feroxbuster/
+# Lokasi wordlist / konfigurasi default Feroxbuster
 ```
 
 **Jika file masih .gz, ekstrak dulu:**
@@ -175,17 +184,21 @@ sudo gzip -d /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt.gz
 
 - Response `403` tetap perlu diperhatikan — bisa berarti resource ada tapi ditolak.
 - Response `3xx` bisa mengungkap endpoint lain.
+- Periksa file `robots.txt` (`http://<TARGET>/robots.txt`) — sering kali mencantumkan direktori rahasia atau endpoint sensitif yang sengaja disembunyikan (`Disallow:`).
+- Berkas `.env` wajib dicek (`http://<TARGET>/.env`) — sering memuat kredensial penting seperti kredensial database, API key, atau secret token.
 - Gunakan wordlist kecil untuk awal, besar untuk deep scan.
 
 ---
 
 ## Checklist Setelah Directory Bruteforce
 
-- [ ] Catat semua endpoint yang ditemukan
-- [ ] Identifikasi page menarik (admin, upload, config)
-- [ ] Cek file sensitif (.git, .env, backup)
-- [ ] Coba akses manual setiap endpoint
-- [ ] Catat untuk tahap exploitation
+- [ ] Periksa berkas `robots.txt` untuk menemukan path/direktori rahasia (`Disallow:`)
+- [ ] Periksa berkas `.env` untuk potensi kebocoran kredensial sensitif
+- [ ] Catat semua direktori dan endpoint yang berhasil ditemukan
+- [ ] Identifikasi halaman menarik (admin panel, portal login, lokasi upload)
+- [ ] Cek berkas sensitif lainnya (`.git`, Cadangan `.bak` / `.sql`, `config.php`)
+- [ ] Coba akses manual setiap endpoint yang mencurigakan
+- [ ] Catat seluruh temuan untuk tahap eksploitasi selanjutnya
 
 ---
 
