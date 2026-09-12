@@ -1,18 +1,18 @@
-# 🔍 Network Discovery — Menemukan Target di Jaringan
+﻿# Network Discovery — Menemukan Target di Jaringan
 
 > **Tujuan:** Menemukan host aktif di dalam network (terutama di lingkungan NAT/CTF).
 > **Tools utama:** `netdiscover`, `nmap`
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 - **netdiscover** → Mengirim ARP request untuk mendeteksi semua host aktif di LAN.
 - **nmap -sn** → Melakukan ping scan (tidak memindai port, lebih cepat).
 
 ---
 
-## ⚙️ Langkah-Langkah
+## Langkah-Langkah
 
 ### Langkah 1: Deteksi Host Aktif dengan netdiscover
 
@@ -72,7 +72,7 @@ inet 10.0.2.5/24 brd 10.0.2.255 scope global dynamic eth0
 
 ---
 
-## ⚠️ Catatan Penting
+## Catatan Penting
 
 - Gunakan `sudo` untuk netdiscover (butuh akses raw socket).
 - Pastikan network interface aktif dan terhubung.
@@ -80,7 +80,7 @@ inet 10.0.2.5/24 brd 10.0.2.255 scope global dynamic eth0
 
 ---
 
-## ✅ Checklist Setelah Network Discovery
+## Checklist Setelah Network Discovery
 
 - [ ] IP Target (misal: 10.0.2.10)
 - [ ] IP Kali/LHOST (misal: 10.0.2.5)
@@ -88,6 +88,6 @@ inet 10.0.2.5/24 brd 10.0.2.255 scope global dynamic eth0
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [Nmap Official](https://nmap.org/book/man.html)
