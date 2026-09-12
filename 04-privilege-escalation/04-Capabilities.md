@@ -53,7 +53,7 @@ www-data@jobportal:~$ getcap -r / 2>/dev/null
 
 > **Catatan:** Fokus utama adalah interpreter dengan `cap_setuid` — langsung memberi root shell. `cap_dac_read_search` tidak memberi shell, tapi cukup untuk membaca flag langsung tanpa shell. Capability lain seperti `cap_setgid`, `cap_sys_ptrace` tetap berbahaya — daftar lengkapnya di GTFOBins → bagian **Capabilities**. `lua` sengaja tidak didaftarkan karena tidak bisa memanggil `setuid(0)` — capability tidak diwarisi proses child saat exec (berbeda dengan euid pada SUID).
 
-> **Oneliner gabungan:** `find / -perm -4000 -type f 2>/dev/null; sudo -l; getcap -r / 2>/dev/null` — cek SUID, sudo, dan capabilities **sekaligus** dalam satu command (dipakai pada PoC laporan, langkah eskalasi root). Breakdown, tampilan output rentan, dan langkah lanjut → [LPE_Oneliner.md](LPE_Oneliner.md)
+> **Oneliner gabungan:** `find / -perm -4000 -type f 2>/dev/null; sudo -l; getcap -r / 2>/dev/null` — cek SUID, sudo, dan capabilities **sekaligus** dalam satu command (dipakai pada PoC laporan, langkah eskalasi root). Breakdown, tampilan output rentan, dan langkah lanjut → [01-LPE_Oneliner.md](01-LPE_Oneliner.md)
 
 ---
 
