@@ -4,6 +4,7 @@ cek hak Capabilities
 
 ```bash
 getcap -r /
+getcap -r / 2>/dev/null
 ```
 Perhatikan entry seperti:
 
