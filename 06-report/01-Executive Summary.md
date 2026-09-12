@@ -1,4 +1,4 @@
-# 📝 Executive Summary
+﻿# Executive Summary
 
 > **Tujuan:** Ringkasan eksekutif hasil penetration testing — tinggal copas, ganti yang di-**bold** sesuai engagement kamu.
 
@@ -14,9 +14,9 @@ Pengujian keamanan (penetration testing) ini dilakukan terhadap aplikasi web/API
 
 | Severity | Jumlah |
 |----------|--------|
-| 🔴 Critical | 3 |
-| 🟠 High | 2 |
-| 🟡 Medium | 1 |
+|  Critical | 3 |
+|  High | 2 |
+|  Medium | 1 |
 | **Total** | **6** |
 
 ---
@@ -25,12 +25,12 @@ Pengujian keamanan (penetration testing) ini dilakukan terhadap aplikasi web/API
 
 | No | Kerentanan | Severity | Endpoint / Lokasi | CVSS |
 |----|------------|----------|--------------------|------|
-| 1 | SQL Injection — Input tidak disanitasi, penyerang dapat dump seluruh database | 🔴 Critical | `/api/auth/login`, `/api/jobs/search?keyword=` | 9.3 |
-| 2 | Unrestricted File Upload — Upload webshell `.php` berhasil dieksekusi sebagai script di server (RCE) | 🔴 Critical | `/api/resume/upload` → `/uploads/resume/shell.php?cmd=id` | 9.8 |
-| 3 | Command Injection — Eksekusi perintah shell OS via parameter diagnostik (RCE) | 🔴 Critical | `/api/tools/ping?target=` | 9.8 |
-| 4 | IDOR (Insecure Direct Object Reference) — Akses & modifikasi data user lain via manipulasi ID | 🟠 High | `/api/users/{id}/profile` | 8.6 |
-| 5 | Local File Inclusion (LFI) — Membaca file sistem (`/etc/passwd`) & file `.env` Laravel via path traversal | 🟠 High | `/api/download?file=` | 7.5 |
-| 6 | Stored XSS (Cross-Site Scripting) — Payload JavaScript tersimpan dan tereksekusi di browser korban | 🟡 Medium | `/api/profile/update` (field profil) | 5.1 |
+| 1 | SQL Injection — Input tidak disanitasi, penyerang dapat dump seluruh database |  Critical | `/api/auth/login`, `/api/jobs/search?keyword=` | 9.3 |
+| 2 | Unrestricted File Upload — Upload webshell `.php` berhasil dieksekusi sebagai script di server (RCE) |  Critical | `/api/resume/upload` → `/uploads/resume/shell.php?cmd=id` | 9.8 |
+| 3 | Command Injection — Eksekusi perintah shell OS via parameter diagnostik (RCE) |  Critical | `/api/tools/ping?target=` | 9.8 |
+| 4 | IDOR (Insecure Direct Object Reference) — Akses & modifikasi data user lain via manipulasi ID |  High | `/api/users/{id}/profile` | 8.6 |
+| 5 | Local File Inclusion (LFI) — Membaca file sistem (`/etc/passwd`) & file `.env` Laravel via path traversal |  High | `/api/download?file=` | 7.5 |
+| 6 | Stored XSS (Cross-Site Scripting) — Payload JavaScript tersimpan dan tereksekusi di browser korban |  Medium | `/api/profile/update` (field profil) | 5.1 |
 
 ---
 
@@ -40,10 +40,10 @@ Sebagian besar temuan disebabkan oleh **minimnya sanitasi input**, **tidak adany
 
 | Prioritas | Rekomendasi |
 |-----------|-------------|
-| 🥇 Pertama | Terapkan **Prepared Statements / Parameterized Queries** pada seluruh fungsi kueri database untuk menutup kerentanan SQL Injection. |
-| 🥈 Kedua | Batasi jenis ekstensi berkas (**whitelisting**), validasi tipe MIME/header di sisi server, rename file hasil upload, dan simpan berkas unggahan di **direktori non-executable** agar file `.php` tidak bisa dieksekusi sebagai webshell. |
-| 🥉 Ketiga | Validasi **kepemilikan objek dan hak akses** pengguna (access control check) di sisi server pada setiap pemanggilan ID/parameter API untuk mencegah IDOR. |
-| 4️⃣ Keempat | Lakukan **sanitasi input** yang masuk dan terapkan **HTML output encoding** sebelum menampilkan data pengguna ke aplikasi guna mencegah Stored XSS. |
+|  Pertama | Terapkan **Prepared Statements / Parameterized Queries** pada seluruh fungsi kueri database untuk menutup kerentanan SQL Injection. |
+|  Kedua | Batasi jenis ekstensi berkas (**whitelisting**), validasi tipe MIME/header di sisi server, rename file hasil upload, dan simpan berkas unggahan di **direktori non-executable** agar file `.php` tidak bisa dieksekusi sebagai webshell. |
+|  Ketiga | Validasi **kepemilikan objek dan hak akses** pengguna (access control check) di sisi server pada setiap pemanggilan ID/parameter API untuk mencegah IDOR. |
+| 4 Keempat | Lakukan **sanitasi input** yang masuk dan terapkan **HTML output encoding** sebelum menampilkan data pengguna ke aplikasi guna mencegah Stored XSS. |
 
 ---
 
@@ -60,7 +60,7 @@ Sebagian besar temuan disebabkan oleh **minimnya sanitasi input**, **tidak adany
 
 ---
 
-## ✅ Checklist Executive Summary
+## Checklist Executive Summary
 
 - [ ] Ringkasan pengujian lengkap (target, metode, periode).
 - [ ] Tabel severity terisi sesuai jumlah temuan.
@@ -70,7 +70,7 @@ Sebagian besar temuan disebabkan oleh **minimnya sanitasi input**, **tidak adany
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [OWASP – Pentest Reporting Guidelines](https://owasp.org/www-project-pentest-reporting/)
 - [CVSS Calculator — FIRST](https://www.first.org/cvss/calculator/3.1)
