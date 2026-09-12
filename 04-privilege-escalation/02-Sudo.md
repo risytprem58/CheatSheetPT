@@ -70,7 +70,7 @@ User www-data may run the following commands on jobportal:
 
 > **Catatan:** Daftar di atas difokuskan hanya ke binary yang **langsung memberi shell**. Binary lain seperti `cp`, `tee`, `tar`, `zip`, `wget`, `curl`, `find`, `ftp`, `git`, `docker` tetap bisa diabuse — daftar lengkapnya di GTFOBins → bagian **Sudo**. Cukup **satu** entry RENTAN untuk mendapatkan root shell.
 
-> **Oneliner gabungan:** `find / -perm -4000 -type f 2>/dev/null; sudo -l; getcap -r / 2>/dev/null` — cek SUID, sudo, dan capabilities **sekaligus** dalam satu command (dipakai pada PoC laporan, langkah eskalasi root). Breakdown, tampilan output rentan, dan langkah lanjut → [LPE_Oneliner.md](LPE_Oneliner.md)
+> **Oneliner gabungan:** `find / -perm -4000 -type f 2>/dev/null; sudo -l; getcap -r / 2>/dev/null` — cek SUID, sudo, dan capabilities **sekaligus** dalam satu command (dipakai pada PoC laporan, langkah eskalasi root). Breakdown, tampilan output rentan, dan langkah lanjut → [01-LPE_Oneliner.md](01-LPE_Oneliner.md)
 
 > **Catatan:** Jika `sudo -l` meminta password (tidak NOPASSWD), gunakan varian non-interaktif `sudo -n -l` — langsung gagal tanpa menunggu input, cocok untuk scripting.
 
