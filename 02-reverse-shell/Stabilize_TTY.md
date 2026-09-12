@@ -1,18 +1,18 @@
-# 🪟 Stabilkan Shell (TTY) — Membuat Reverse Shell Interaktif
+﻿# Stabilkan Shell (TTY) — Membuat Reverse Shell Interaktif
 
 > **Tujuan:** Mengubah shell non‑interaktif menjadi **shell interaktif** (dengan autocomplete, history, dll.) setelah berhasil mendapatkan reverse shell.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 Setelah reverse shell terhubung, biasanya berupa **non‑interactive shell** (hanya mengeksekusi satu perintah). Dengan **pseudo‑terminal (PTY)**, kita dapat mendapatkan **shell interaktif** seperti sesi SSH.
 
 ---
 
-## ⚙️ Metode TTY (dari yang paling umum ke yang paling sederhana)
+## Metode TTY (dari yang paling umum ke yang paling sederhana)
 
-### 1️⃣ Python (Jika tersedia)
+### 1 Python (Jika tersedia)
 
 ```bash
 python3 -c 'import pty; pty.spawn("/bin/bash")'
@@ -22,7 +22,7 @@ python3 -c 'import pty; pty.spawn("/bin/bash")'
 
 ---
 
-### 2️⃣ Python via `os.system`
+### 2 Python via `os.system`
 
 ```bash
 echo os.system('/bin/bash')
@@ -32,7 +32,7 @@ echo os.system('/bin/bash')
 
 ---
 
-### 3️⃣ Interactive Shell (Bash)
+### 3 Interactive Shell (Bash)
 
 ```bash
 /bin/sh -i
@@ -42,7 +42,7 @@ echo os.system('/bin/bash')
 
 ---
 
-### 4️⃣ `script` Command (Jika tersedia)
+### 4 `script` Command (Jika tersedia)
 
 ```bash
 script -qc /bin/bash /dev/null
@@ -52,7 +52,7 @@ script -qc /bin/bash /dev/null
 
 ---
 
-### 5️⃣ Perl (Jika tersedia)
+### 5 Perl (Jika tersedia)
 
 ```bash
 perl -e 'exec "/bin/sh";'
@@ -60,7 +60,7 @@ perl -e 'exec "/bin/sh";'
 
 ---
 
-## 📋 Checklist TTY
+## Checklist TTY
 
 - [ ] Cek program yang tersedia pada target (`which python3`, `which script`, `which perl`, `which bash`).
 - [ ] Coba `python3 -c 'import pty;pty.spawn("/bin/bash")'`.
@@ -70,7 +70,7 @@ perl -e 'exec "/bin/sh";'
 
 ---
 
-## ✅ Contoh Penggunaan
+## Contoh Penggunaan
 
 ```bash
 # 1. Jalankan listener di attacker
@@ -83,7 +83,7 @@ python3 -c 'import pty;pty.spawn("/bin/bash")'
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [PentestMonkey – Stabilize Reverse Shell](https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet)
 - [OWASP – TTY Injection](https://owasp.org/www-community/attacks/TTY_Injection)
