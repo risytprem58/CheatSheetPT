@@ -1,11 +1,11 @@
-# 🛠️ msfvenom — Generator Payload Metasploit
+﻿# msfvenom — Generator Payload Metasploit
 
 > **Tujuan:** Membuat payload reverse/bind shell dalam berbagai format (PHP, WAR, ELF, EXE, dll.) untuk dieksekusi di target.
 > **LHOST** = IP attacker (Kali) | **LPORT** = Port listener
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 `msfvenom` adalah kombinasi `msfpayload` + `msfencode` (generasi Metasploit modern). Bisa membuat **reverse shell** atau **bind shell** untuk banyak platform.
 
