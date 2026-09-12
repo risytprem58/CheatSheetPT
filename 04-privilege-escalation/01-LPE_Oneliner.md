@@ -15,9 +15,9 @@ Breakdown tiap segmen:
 
 | Segmen | Fungsi | Vektor |
 |--------|--------|--------|
-| `find / -perm -4000 -type f 2>/dev/null` | Enumerasi semua binary ber-SUID bit | [SUID.md](SUID.md) |
-| `sudo -l` | Enumerasi command yang boleh dijalankan via sudo | [Sudo.md](Sudo.md) |
-| `getcap -r / 2>/dev/null` | Enumerasi binary ber-capabilities | [Capabilities.md](Capabilities.md) |
+| `find / -perm -4000 -type f 2>/dev/null` | Enumerasi semua binary ber-SUID bit | [03-suid.md](03-suid.md) |
+| `sudo -l` | Enumerasi command yang boleh dijalankan via sudo | [02-Sudo.md](02-Sudo.md) |
+| `getcap -r / 2>/dev/null` | Enumerasi binary ber-capabilities | [04-Capabilities.md](04-Capabilities.md) |
 
 > **Catatan:** Separator `;` menjalankan ketiga command secara berurutan meskipun salah satunya gagal. `2>/dev/null` membuang pesan error *Permission denied* agar output tetap bersih. Cukup **satu** entry RENTAN dari segmen mana pun untuk eskalasi ke root.
 
@@ -47,7 +47,7 @@ User www-data may run the following commands on jobportal:
 /usr/bin/python3 cap_setuid=ep      ← RENTAN! os.setuid(0) + exec shell
 ```
 
-> **Capture:** Satu command langsung menyingkap ketiga vektor LPE — SUID `find`/`vim`, sudo `NOPASSWD: vim`, dan `python3 cap_setuid`. Daftar lengkap binary rentan per vektor ada di masing-masing file (SUID.md, Sudo.md, Capabilities.md).
+> **Capture:** Satu command langsung menyingkap ketiga vektor LPE — SUID `find`/`vim`, sudo `NOPASSWD: vim`, dan `python3 cap_setuid`. Daftar lengkap binary rentan per vektor ada di masing-masing file (03-suid.md, 02-Sudo.md, 04-Capabilities.md).
 
 ---
 
@@ -107,7 +107,7 @@ Cari & baca flag (/usr/bin/find / -iname flag.txt)
 
 ## Referensi
 
-- [SUID.md](SUID.md) — enumerasi & eksploitasi binary SUID
-- [Sudo.md](Sudo.md) — enumerasi & eksploitasi sudoers
-- [Capabilities.md](Capabilities.md) — enumerasi & eksploitasi capabilities
+- [03-suid.md](03-suid.md) — enumerasi & eksploitasi binary SUID
+- [02-Sudo.md](02-Sudo.md) — enumerasi & eksploitasi sudoers
+- [04-Capabilities.md](04-Capabilities.md) — enumerasi & eksploitasi capabilities
 - [GTFOBins](https://gtfobins.github.io/)
