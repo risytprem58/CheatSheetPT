@@ -63,6 +63,7 @@
 └──  07-suplement/              # Suplemen tools & services pendukung
     ├──  find.md                  # Pencarian berkas & eksploitasi find SUID
     ├──  ftp.md                   # Enumerasi & anonymous login FTP
+    ├──  kompetensi.md            # Enam unit kompetensi praktik peserta
     ├──  mysql.md                 # Enumerasi & eksploitasi MySQL
     ├──  post-exploitation.md     # Aktivitas setelah reverse shell terhubung
     └──  ssh.md                   # Autentikasi, transfer berkas, tunneling SSH
