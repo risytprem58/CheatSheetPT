@@ -17,24 +17,6 @@
 
 ---
 
-## Alur Berurutan
-
-```text
-Menentukan Ruang Lingkup (RoE — hanya IP target disepakati)
-    ↓
-Menentukan Metode Penilaian (skor CVSS v4.0 per temuan)
-    ↓
-Mengumpulkan Informasi (port scan & enumerasi berulang)
-    ↓
-Mencari Kerentanan (XSS, LFI, upload bypass, password reuse)
-    ↓
-Menguji Kerentanan (eksploitasi aktual → flag di direktori user)
-    ↓
-Menyusun Laporan (PDF: eksekutif summary → temuan → POC → rekomendasi)
-```
-
----
-
 ## Peta ke Dokumen Referensi di Repo
 
 | Unit Kompetensi | Referensi Terkait |
