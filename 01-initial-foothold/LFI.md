@@ -260,7 +260,7 @@ arjun -i targets.txt
 arjun -u http://<TARGET>/index.php? --include 'page=index'
 
 # Mode stabil (thread=1 + delay acak 6-12 detik, untuk target yang rate-limit)
-arjun -u http://<TARGET>/index.php --stable
+arjun -u http://<TARGET>/index.php? --stable
 
 # Simpan hasil ke file JSON
 arjun -u http://<TARGET>/index.php -oJ hasil.json
