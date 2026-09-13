@@ -64,6 +64,7 @@
     ├──  find.md                  # Pencarian berkas & eksploitasi find SUID
     ├──  ftp.md                   # Enumerasi & anonymous login FTP
     ├──  mysql.md                 # Enumerasi & eksploitasi MySQL
+    ├──  reverse-shell.md         # Post-exploitation setelah reverse shell
     └──  ssh.md                   # Autentikasi, transfer berkas, tunneling SSH
 ```
 
@@ -80,7 +81,7 @@
 | 5 | `04-privilege-escalation/` | **Privilege Escalation** | Kernel exploits (DirtyFrag, CopyFail), SUID, sudo, capabilities, weak permissions, cron, oneliner enumerasi |
 | 6 | `05-proof/` | **Bukti Akses** | Verifikasi `uid=0` dan hostname |
 | 7 | `06-report/` | **Laporan Pentest** | Informasi engagement, executive summary, daftar temuan, detail per temuan (SQL Injection, IDOR, dll), lampiran |
-| 8 | `07-suplement/` | **Suplemen Tools & Services** | Cheat sheet per-tool/per-service: find, ftp, mysql, ssh |
+| 8 | `07-suplement/` | **Suplemen Tools & Services** | Cheat sheet per-tool/per-service: find, ftp, mysql, reverse shell post-exploitation, ssh |
 
 ---
 
